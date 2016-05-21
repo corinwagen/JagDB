@@ -1,0 +1,40 @@
+#page_container {
+    width: 1200px;
+    margin: auto;    
+    float: left;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+.logo { 
+    font-family: "Ubuntu", sans-serif;
+    font-size: 36px;
+    text-color: black;
+}
+
+#header { 
+    background: #7c00cc;
+    height: 50px; 
+}
+
+#sidebar { 
+    background: red; 
+    width: 280px;
+    float: left;
+}
+
+#content { 
+    background: green;
+}
+
+#footer {
+    background: yellow; 
+    clear: both;
+}
+
+.hidden { 
+    display: none;
+}
