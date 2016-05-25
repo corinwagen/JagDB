@@ -8,7 +8,8 @@ __PACKAGE__->config(namespace => '');
 
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
-    $c->stash->{wrapper => "src/wrapper.tt"};
+    $c->stash->{title => "Home"};
+#    $c->stash->{wrapper => "src/wrapper.tt"};
 }
 
 sub default :Path {

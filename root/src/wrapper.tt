@@ -7,19 +7,19 @@
     
     <body>
     <div id="page_container">
+    <div id="menu">
+        <br>
+        <span class=logo> &nbsp; JagDB </span>
+        &nbsp;&nbsp;&nbsp;
+        <span class=main_nav> Add Questions &nbsp; Search/Export Questions &nbsp; User Settings</span> 
+    </div>
+    
     <div id="header">
-        <span class=logo> JagDB </span>
-        <h1>[% template.title or site.title %]</h1>
+        <h1>[% title or template.title or site.title %]</h1>
     </div>
     
     <div id="bodyblock">
-    <div id="sidebar">
-        Navigation:
-        <ul>
-            <li><a href="[% c.uri_for('/books/list') %]">Home</a></li>
-            <li><a href="[% c.uri_for('/')
-                %]" title="Catalyst Welcome Page">Welcome</a></li>
-        </ul>
+    <div id="sidebar" class=hidden>
     </div><!-- end menu -->
     
     <div id="content">
