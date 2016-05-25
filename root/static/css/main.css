@@ -15,7 +15,7 @@ div {
 }
 
 .logo { 
-    font-family: "Big John", "Ubuntu", sans-serif;
+    font-family: "Arial", "Helvetica", "Ubuntu", sans-serif;
     font-size: 30px;
     color: white !important;
 }
@@ -51,7 +51,7 @@ div {
 }
 
 .main_nav {
-    font-family: "Big John", "Ubuntu", sans-serif;
+    font-family: "Arial", "Helvetica", "Ubuntu", sans-serif;
     margin: 0;
     padding: 0;
     text-color: white;
