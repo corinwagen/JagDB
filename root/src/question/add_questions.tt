@@ -1,0 +1,6 @@
+<h2> Add Questions </h2> 
+
+    <form id="block_import" action="[% %]"> 
+        <textarea name="text" rows=20 cols=100> </textarea>
+    </form>  
+    <button type=button class=btn id=submit>Import</button> 

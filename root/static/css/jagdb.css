@@ -1,5 +1,7 @@
 .jagdb_top_nav { 
     vertical-align: middle;
+    display: inline-block;
+    margin-top: 8px;
 }
 
 .jagdb_logo {
@@ -9,4 +11,10 @@
 
 .jagdb_top_nav_link { 
     font-size: 20px;
+    color: #333;
+}
+
+.jagdb_textarea {
+    font-size: 12px;
+    font-family: "Times New Roman", serif;
 }

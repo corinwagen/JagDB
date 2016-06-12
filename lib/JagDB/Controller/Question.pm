@@ -4,6 +4,14 @@ use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller' }
 
+
+sub setup : Chained('/') PathPrefix CaptureArgs(1) {
+        my ( $self, $c, $id ) = @_;
+#        my $cc = $c->model('DB::')->find( $id );
+        $c->stash->{cycle_count} = $cc;
+
+}
+
 sub view_questions : Local {
     my ($self, $c) = @_; 
 
@@ -17,6 +25,16 @@ sub view_questions : Local {
 
 sub add_questions : Local {
     my ($self, $c) = @_;
+
+}
+
+sub process_block_import : Local {
+    my ($self, $c) = @_; 
+
+}
+
+sub edit_question : Chained('setup') {
+    my ($self, $c) = @_; 
 
 }
 

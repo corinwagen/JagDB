@@ -21,62 +21,44 @@
     <body>
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid jagdb_top_nav">
-                <strong class=jagdb_logo> JagDB </strong>
-                <a class=jagdb_top_nav_link href="[% c.uri_for( c.controller.action_for('add_questions') ) %]" > Add Questions </a>
+                <div style="float:left;">
+                    <strong class=jagdb_logo> JagDB </strong>
+                    &nbsp;
+                    &nbsp;
+                </div>
+                <div style="float:left;">
+                    <ul class="nav nav-tabs" style="display:inline;">
+                        <li id=add_link>
+                            <a class=jagdb_top_nav_link href="[% c.uri_for( c.controller('Question').action_for('add_questions') ) %]" > Add Questions </a>
+                        </li>
+                        <li id=view_link>
+                            <a class=jagdb_top_nav_link href="[% c.uri_for( c.controller('Question').action_for('view_questions') ) %]" > View Questions </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </nav>
 
-        <h1>Hello, world!</h1>
+        <span class="message">[% status_msg %]</span>
+        <span class="error">[% error_msg %]</span>
+        
+        <div class=container> 
+            [% content %]
+        </div>
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
-        <script src="js/bootstrap.min.js"></script>
+        <script src="[% c.uri_for('/static/js/bootstrap.min.js') %]"></script>
+        <script> 
+            var current_page = location.pathname; 
+            if (current_page.match("add_questions")) {
+                $("#add_link").addClass('active');
+            }
+        </script>
     </body>
 </html>
 
 
-
-<!--
-<head>
-    <link rel="stylesheet" href="[% c.uri_for('/static/css/main.css') %]" />
-</head>
-
-<body>
-<div id="page_container">
-<div id="menu">
-    <br>
-    <span class=logo> &nbsp; JagDB </span>
-    &nbsp;&nbsp;&nbsp;
-    <span class=main_nav> 
-        <a href="[% c.uri_for( c.controller('Question').action_for("view_questions") ) %]"> Add Questions </a> 
-        &nbsp; 
-        Search Questions 
-        &nbsp; 
-    </span> 
-</div>
-
-<div id="header">
-    <h1>[% title or template.title or site.title %]</h1>
-</div>
-
-<div id="bodyblock">
-<div id="sidebar" class=hidden>
-</div><!-- end menu -->
-
-<div id="content">
-    [%# Status and error messages %]
-    <span class="message">[% status_msg %]</span>
-    <span class="error">[% error_msg %]</span>
-    [%# This is where TT will stick all of your template's contents. -%]
-    [% content %]
-</div><!-- end content -->
-</div><!-- end bodyblock -->
-
-<div id="footer">Copyright (c) Corin Wagen</div>
-</div><!-- end outer -->
-
-</body>
-</html>
 
 
