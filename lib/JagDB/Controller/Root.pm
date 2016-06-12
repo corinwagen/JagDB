@@ -8,7 +8,9 @@ __PACKAGE__->config(namespace => '');
 
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
-    $c->stash->{title => "Home"};
+
+    my @packets = $c->model('DB::Packet')->all;
+    $c->stash->{packets} = \@packets; 
 #    $c->stash->{wrapper => "src/wrapper.tt"};
 }
 

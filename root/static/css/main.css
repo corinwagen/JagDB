@@ -15,7 +15,7 @@ div {
 }
 
 .logo { 
-    font-family: "Arial", "Helvetica", "Ubuntu", sans-serif;
+    font-family: "Big John", "Arial", "Helvetica", "Ubuntu", sans-serif;
     font-size: 30px;
     color: white !important;
 }
@@ -38,11 +38,9 @@ div {
 }
 
 #content { 
-    background: green;
 }
 
 #footer {
-    background: yellow; 
     clear: both;
 }
 
