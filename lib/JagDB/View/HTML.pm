@@ -11,6 +11,7 @@ __PACKAGE__->config(
     ],
     TIMER => 0,
     WRAPPER => "wrapper.tt",
+    render_die => 1,
 );
 
 =head1 NAME
