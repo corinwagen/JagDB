@@ -1,8 +1,15 @@
 from django.http import HttpResponse
+from django.shortcuts import render
 import datetime
 
-def hello(request):
-    return HttpResponse("Hello world")
+def home(request):
+    context = {}
+#    if request.session['user']:
+#        context.user = request.session['user']
+#    else:
+    user = {'name': 'ari'}
+    context['user'] = user
+    return render(request, 'home.html', context)
 
 def current_datetime(request):
     now = datetime.datetime.now()

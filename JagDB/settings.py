@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = '*w6o(jq4mfx5c&!*-ur#mfk+anc*j_1h9qedgyrh-%h161a5tw'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -55,7 +53,10 @@ ROOT_URLCONF = 'JagDB.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+#             '/Users/corin/code/JagDB/JagDB/templates'
+            os.path.join(BASE_DIR, 'JagDB/templates/')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
