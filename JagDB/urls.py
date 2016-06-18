@@ -19,7 +19,7 @@ from JagDB import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^home/$', views.home),
-    url(r'^time/$', views.current_datetime),
-    url(r'^time/plus/(\d{1,2})/$', views.hours_ahead),
+    url(r'^view_questions', views.view_questions),
+    url(r'^add_questions', views.add_questions),
+    url(r'^home/', views.home),
 ]

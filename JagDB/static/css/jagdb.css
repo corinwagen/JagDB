@@ -1,0 +1,29 @@
+.jagdb_top_nav { 
+    vertical-align: middle;
+    display: inline-block;
+    margin-top: 8px;
+}
+
+.jagdb_logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: #7c00cc;
+    vertical-align: middle; 
+    line-height: 25px;
+}
+
+.jagdb_top_nav_link { 
+    font-size: 20px;
+    color: #333;
+    vertical-align: middle; 
+    line-height: 25px;
+}
+
+.jagdb_top_nav_link_parent {
+   height: 50px;
+}
+
+.jagdb_textarea {
+    font-size: 12px;
+    font-family: "Times New Roman", serif;
+}

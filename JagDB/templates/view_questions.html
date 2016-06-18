@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    View Questions 
+{% endblock %} 
+
+{% block content %}
+    <table class=table> 
+        <thead>
+            <th>
+                Category
+            </th>
+            <th>
+                Question
+            </th>
+        </thead>
+        <tbody>
+            {% for question in questions %} 
+                <tr>
+                    <td>
+                        {{ question.category }} 
+                    </td>
+                    <td>
+                        {{ question.text }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+    </script> 
+{% endblock %} 

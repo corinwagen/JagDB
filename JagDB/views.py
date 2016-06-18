@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from question_categorizer.models import Tossup, Bonus
 import datetime
 
 def home(request):
@@ -11,16 +12,26 @@ def home(request):
     context['user'] = user
     return render(request, 'home.html', context)
 
-def current_datetime(request):
-    now = datetime.datetime.now()
-    html = "<html><body>It is now %s.</body></html>" % now
-    return HttpResponse(html)    
+def view_questions (request):
+    context = {}
+    questions = []
+    question = request.GET.get('question', '')  
+    answer = request.GET.get('answer', '')
+    min_diff = request.GET.get('min_diff', 1)
+    max_diff = request.GET.get('max_diff', 10)
+    
+    tossups = Tossup.objects.filter(question__icontains=question, answer__icontains=answer, packet__tournament__difficulty__range=(min_diff, max_diff))
+#    bonuses = Bonus.objects.filter(question__icontains=question, answer__icontains=answer, packet__tournament__difficulty__range=(min_diff, max_diff))
+    
+    for tossup in tossups:
+        tossup_text = "{} <b> {} </b>".format(tossup.question, tossup.answer)
+        tossup_category = tossup.subject.subject
+        tossup_dict = {"text": tossup_text, "category": tossup_category}
+        questions.append(tossup_dict)
 
-def hours_ahead(request, offset):
-    try:
-        offset = int(offset)
-    except ValueError:
-        raise Http404()
-    dt = datetime.datetime.now() + datetime.timedelta(hours=offset)
-    html = "<html><body>In %s hour(s), it will be %s.</body></html>" % (offset, dt)
-    return HttpResponse(html)
+    context["questions"] = questions
+    return render(request, 'view_questions.html', context)
+
+def add_questions (request): 
+    context = {}
+    return render(request, 'add_questions.html', context)
