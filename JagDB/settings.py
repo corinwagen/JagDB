@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'JagDB',
     'question_categorizer',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE_CLASSES = [

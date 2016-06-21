@@ -9,7 +9,7 @@ class Packet(models.Model):
     packet_mongo = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
-    tournament_id = models.ForeignKey("Tournament")
+    tournament = models.ForeignKey("Tournament")
 
     class Meta:
         managed = False

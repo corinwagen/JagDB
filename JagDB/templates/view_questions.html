@@ -5,6 +5,26 @@
 {% endblock %} 
 
 {% block content %}
+    <form role=form> 
+        <h4> Filter Questions </h4> 
+        <table> 
+            <tr>
+                <td> Question contains: </td>
+                <td> <input type=text name=question> </td>
+                <td> Difficulty: <td>
+            </tr>
+            <tr>
+                <td> Answer contains: </td>
+                <td> <input type=text name=answer> </td>
+                <td>
+                    <b>1</b> 
+                    <input id="slider" type="text" class="span2" value="" data-slider-min="1" data-slider-max="10" data-slider-step="1" data-slider-value="[2,4]"/> 
+                    <b>10</b>
+                </td>
+            </tr>
+        </table> 
+    </form>
+
     <table class=table> 
         <thead>
             <th>
@@ -28,5 +48,6 @@
         </tbody>
     </table>
     <script>
+        $("#slider").slider({});
     </script> 
 {% endblock %} 

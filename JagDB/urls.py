@@ -16,10 +16,13 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from JagDB import views 
+import debug_toolbar
 
+#app_name = "jagdb"
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^view_questions', views.view_questions),
-    url(r'^add_questions', views.add_questions),
-    url(r'^home/', views.home),
+    url(r'^view_questions', views.view_questions, name="view_questions"),
+    url(r'^add_questions', views.add_questions, name="add_questions"),
+    url(r'^__debug__/', debug_toolbar.urls),
+    url(r'^home/', views.home, name="home"),
 ]

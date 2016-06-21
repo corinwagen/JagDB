@@ -20,13 +20,12 @@ def view_questions (request):
     min_diff = request.GET.get('min_diff', 1)
     max_diff = request.GET.get('max_diff', 10)
     
-    tossups = Tossup.objects.filter(question__icontains=question, answer__icontains=answer, packet__tournament__difficulty__range=(min_diff, max_diff))
+    tossups = Tossup.objects.filter(question__icontains=question, answer__icontains=answer) #tossup_packet__tournament__difficulty__range=(min_diff, max_diff))
 #    bonuses = Bonus.objects.filter(question__icontains=question, answer__icontains=answer, packet__tournament__difficulty__range=(min_diff, max_diff))
     
-    for tossup in tossups:
-        tossup_text = "{} <b> {} </b>".format(tossup.question, tossup.answer)
-        tossup_category = tossup.subject.subject
-        tossup_dict = {"text": tossup_text, "category": tossup_category}
+    for tossup in tossups[:50]:
+        tossup_text = "{} <b> {} </b>".format(tossup.question.encode("utf-8"), tossup.answer.encode("utf-8"))
+        tossup_dict = {"text": tossup_text.decode('utf-8'), "category": tossup.subject.subject}
         questions.append(tossup_dict)
 
     context["questions"] = questions

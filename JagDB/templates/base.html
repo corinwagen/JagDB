@@ -9,10 +9,15 @@
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
         <title>{% block title %} {% endblock %}</title>
 
+        <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+
         <!-- Bootstrap -->
         <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
         <link href="{% static 'css/jagdb.css' %}" rel="stylesheet">
 
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="{% static 'js/jquery-2.2.0.min.js' %}"></script>
+        
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -26,15 +31,15 @@
                 <div style="float:left;">
                     <ul class="nav nav-tabs" style="display:table-row;">
                         <li class=jagdb_top_nav_link_parent>
-                            <a class=jagdb_logo href="{% url 'JagDB.views.home' %}"> JagDB </a>
+                            <a class=jagdb_logo href="{% url 'home' %}"> JagDB </a>
                             &nbsp;
                             &nbsp;
                         </li>
                         <li id=add_link class=jagdb_top_nav_link_parent >
-                            <a class=jagdb_top_nav_link href="{% url 'JagDB.views.add_questions' %}" > Add Questions </a>
+                            <a class=jagdb_top_nav_link href="{% url 'add_questions' %}" > Add Questions </a>
                         </li>
                         <li id=view_link class=jagdb_top_nav_link_parent >
-                            <a class=jagdb_top_nav_link href="{% url 'JagDB.views.view_questions' %}" > View Questions </a>
+                            <a class=jagdb_top_nav_link href="{% url 'view_questions' %}" > View Questions </a>
                         </li>
                     </ul>
                 </div>
@@ -45,8 +50,6 @@
             {% block content %} {% endblock %}
         </div>
 
-        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
         <script> 
@@ -57,6 +60,7 @@
             if (current_page.match("view_questions")) {
                 $("#view_link").addClass('active');
             } 
+            
         </script>
     </body>
 </html>
