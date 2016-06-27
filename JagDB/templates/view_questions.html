@@ -7,19 +7,23 @@
 {% block content %}
     <form role=form> 
         <h4> Filter Questions </h4> 
-        <table> 
+        <table class=table-condensed> 
             <tr>
                 <td> Question contains: </td>
-                <td> <input type=text name=question> </td>
-                <td> Difficulty: <td>
+                <td> <input type=text name=question value="{{ question }}"> </td>
+                <td> 
+                    Difficulty: 
+                    <input name="difficulty" type="text" readonly style="border:0;"> 
+                <td>
             </tr>
             <tr>
                 <td> Answer contains: </td>
-                <td> <input type=text name=answer> </td>
+                <td> <input type=text name=answer value="{{ answer }}"> </td>
                 <td>
-                    <b>1</b> 
-                    <input id="slider" type="text" class="span2" value="" data-slider-min="1" data-slider-max="10" data-slider-step="1" data-slider-value="[2,4]"/> 
-                    <b>10</b>
+                    <div id="slider" style="width:300px"> </div>
+                </td>
+                <td>
+                    <button class="btn btn-default" type=submit> Filter </button>
                 </td>
             </tr>
         </table> 
@@ -35,6 +39,13 @@
             </th>
         </thead>
         <tbody>
+            {% if questions|length = 0 %}
+                <tr>  
+                    <td>
+                        No questions match the specified filter. 
+                    </td>
+                </tr>  
+            {% endif %}
             {% for question in questions %} 
                 <tr>
                     <td>
@@ -48,6 +59,16 @@
         </tbody>
     </table>
     <script>
-        $("#slider").slider({});
+        $("#slider").slider({
+            max: 10,
+            min: 1,
+            orientation: "horizontal", 
+            range: true, 
+            values: [1,8],
+            slide: function (event, ui) {
+                $("[name=difficulty]").val(ui.values[0] + " - " + ui.values[1]);
+            }
+        });
+        $("[name=difficulty]").val($("#slider").slider("values", 0) +  " - " + $("#slider").slider("values", 1));
     </script> 
 {% endblock %} 

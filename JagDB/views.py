@@ -29,6 +29,8 @@ def view_questions (request):
         questions.append(tossup_dict)
 
     context["questions"] = questions
+    context["question"] = question
+    context["answer"] = answer 
     return render(request, 'view_questions.html', context)
 
 def add_questions (request): 

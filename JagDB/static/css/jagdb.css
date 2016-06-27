@@ -27,3 +27,7 @@
     font-size: 12px;
     font-family: "Times New Roman", serif;
 }
+
+.ui-slider-range { 
+    background: #7c00cc !important;
+}
