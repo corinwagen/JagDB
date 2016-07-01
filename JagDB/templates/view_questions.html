@@ -21,6 +21,8 @@
                 <td> <input type=text name=answer value="{{ answer }}"> </td>
                 <td>
                     <div id="slider" style="width:300px"> </div>
+                    <input type=hidden name=min_diff value="{{ min_diff }}" />
+                    <input type=hidden name=max_diff value="{{ max_diff }}" />
                 </td>
                 <td>
                     <button class="btn btn-default" type=submit> Filter </button>
@@ -64,9 +66,11 @@
             min: 1,
             orientation: "horizontal", 
             range: true, 
-            values: [1,8],
+            values: [{{ min_diff }}, {{ max_diff }}],
             slide: function (event, ui) {
                 $("[name=difficulty]").val(ui.values[0] + " - " + ui.values[1]);
+                $("[name=min_diff]").val(ui.values[0]);
+                $("[name=max_diff]").val(ui.values[1]);
             }
         });
         $("[name=difficulty]").val($("#slider").slider("values", 0) +  " - " + $("#slider").slider("values", 1));
