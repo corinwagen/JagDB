@@ -16,10 +16,13 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from JagDB import views 
+from django.contrib.auth.views import login, logout
 import debug_toolbar
 
 #app_name = "jagdb"
 urlpatterns = [
+    url(r'^accounts/login/$',  login, name="login"),
+    url(r'^accounts/logout/$', logout, name="logout"),
     url(r'^admin/', admin.site.urls),
     url(r'^view_questions', views.view_questions, name="view_questions"),
     url(r'^add_questions', views.add_questions, name="add_questions"),
