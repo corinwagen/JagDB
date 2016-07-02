@@ -12,6 +12,14 @@
     line-height: 25px;
 }
 
+.jagdb_logo_big {
+    font-size: 36px;
+    font-weight: bold;
+    color: #7c00cc;
+    vertical-align: middle; 
+    line-height: 25px;
+}
+
 .jagdb_top_nav_link { 
     font-size: 20px;
     color: #333;
@@ -30,4 +38,14 @@
 
 .ui-slider-range { 
     background: #7c00cc !important;
+}
+
+.jagdb_login_container {
+    width: 300px;
+    height: 300px;
+    padding: 20px;
+    position: absolute;
+    top: 50%;
+    left:50%;
+    margin: -170px -170px;
 }

@@ -11,27 +11,7 @@ def home(request):
 #    if request.session['user']:
 #        context.user = request.session['user']
 #    else:
-    user = {'name': 'ari'}
-    context['user'] = user
     return render(request, 'home.html', context)
-
-def login_view(request):
-    username = request.POST.get('username', '')
-    password = request.POST.get('password', '')
-    user = auth.authenticate(username=username, password=password)
-    if user is not None and user.is_active:
-        # Correct password, and the user is marked "active"
-        auth.login(request, user)
-        # Redirect to a success page.
-        return HttpResponseRedirect("/home/")
-    else:
-        # Show an error page
-        return HttpResponseRedirect("/account/invalid/")
-
-def logout_view(request):
-    auth.logout(request)
-    # Redirect to a success page.
-    return HttpResponseRedirect("/account/loggedout/")
 
 @login_required
 def view_questions (request):

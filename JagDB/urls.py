@@ -22,7 +22,7 @@ import debug_toolbar
 #app_name = "jagdb"
 urlpatterns = [
     url(r'^accounts/login/$',  login, name="login"),
-    url(r'^accounts/logout/$', logout, name="logout"),
+    url(r'^accounts/logout/$', logout, {'next_page': 'login'}, name="logout"),
     url(r'^admin/', admin.site.urls),
     url(r'^view_questions', views.view_questions, name="view_questions"),
     url(r'^add_questions', views.add_questions, name="add_questions"),

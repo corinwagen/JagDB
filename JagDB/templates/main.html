@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block body %}
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid jagdb_top_nav" style="width:100%;">
+            <div style="float:left; width: 100%;">
+                <ul class="nav nav-tabs" style="display:table; width:100%;">
+                    <li class=jagdb_top_nav_link_parent>
+                        <a class=jagdb_logo href="{% url 'home' %}"> JagDB </a>
+                        &nbsp;
+                        &nbsp;
+                    </li>
+                    <li id=add_link class=jagdb_top_nav_link_parent >
+                        <a class=jagdb_top_nav_link href="{% url 'add_questions' %}" > Add Questions </a>
+                    </li>
+                    <li id=view_link class=jagdb_top_nav_link_parent >
+                        <a class=jagdb_top_nav_link href="{% url 'view_questions' %}" > View Questions </a>
+                    </li>
+                    <li style="float:right;">
+                        <span class=jagdb_user_messages>
+                            Currently logged in as {{ user.username }} 
+                            <br>
+                            <button class="btn btn-xs btn-default"> <a href="{% url 'logout' %}?next={% url 'login' %}"> Logout </a> </button>
+                            <button class="btn btn-xs btn-default"> <a href> View Profile </a> </button>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class=container> 
+        {% block content %} {% endblock %}
+    </div>
+
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script> 
+        var current_page = location.pathname; 
+        if (current_page.match("add_questions")) {
+            $("#add_link").addClass('active');
+        } 
+        if (current_page.match("view_questions")) {
+            $("#view_link").addClass('active');
+        } 
+        
+    </script>
+
+{% endblock %} 
