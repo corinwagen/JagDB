@@ -1,7 +1,0 @@
-<h2> Add Questions </h2> 
-
-    <form id="block_import" action="[% c.uri_for( c.controller.action_for('process_block_import') ) %]"> 
-        <textarea name="text" rows=20 cols=100> </textarea>
-        <br>
-        <button type=submit class=btn id=submit>Import</button> 
-    </form>  

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    View Questions 
+{% endblock %} 
+
+{% block content %}
+    <form role=form> 
+        <h4> Filter Questions </h4> 
+        <table class=table-condensed> 
+            <tr>
+                <td> Question contains: </td>
+                <td> <input type=text name=question value="{{ question }}"> </td>
+                <td> 
+                    Difficulty: 
+                    <input name="difficulty" type="text" readonly style="border:0;"> 
+                <td>
+            </tr>
+            <tr>
+                <td> Answer contains: </td>
+                <td> <input type=text name=answer value="{{ answer }}"> </td>
+                <td>
+                    <div id="slider" style="width:300px"> </div>
+                    <input type=hidden name=min_diff value="{{ min_diff }}" />
+                    <input type=hidden name=max_diff value="{{ max_diff }}" />
+                </td>
+                <td>
+                    <button class="btn btn-default" type=submit> Filter </button>
+                </td>
+            </tr>
+        </table> 
+    </form>
+
+    <table class=table> 
+        <thead>
+            <th>
+                Category
+            </th>
+            <th>
+                Question
+            </th>
+        </thead>
+        <tbody>
+            {% if questions|length = 0 %}
+                <tr>  
+                    <td>
+                        No questions match the specified filter. 
+                    </td>
+                </tr>  
+            {% endif %}
+            {% for question in questions %} 
+                <tr>
+                    <td>
+                        {{ question.category }} 
+                    </td>
+                    <td>
+                        {{ question.text }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        $("#slider").slider({
+            max: 10,
+            min: 1,
+            orientation: "horizontal", 
+            range: true, 
+            values: [{{ min_diff }}, {{ max_diff }}],
+            slide: function (event, ui) {
+                $("[name=difficulty]").val(ui.values[0] + " - " + ui.values[1]);
+                $("[name=min_diff]").val(ui.values[0]);
+                $("[name=max_diff]").val(ui.values[1]);
+            }
+        });
+        $("[name=difficulty]").val($("#slider").slider("values", 0) +  " - " + $("#slider").slider("values", 1));
+    </script> 
+{% endblock %} 

@@ -1,7 +1,0 @@
-There are [% question_count %] questions. <br> 
-    
-[% FOREACH question IN questions %] 
-
-    [% question.question %] <br> ANSWER: [% question.answer %] <br> <br>
-
-[% END %]
