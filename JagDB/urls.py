@@ -28,4 +28,5 @@ urlpatterns = [
     url(r'^add_questions', views.add_questions, name="add_questions"),
     url(r'^__debug__/', debug_toolbar.urls),
     url(r'^home/', views.home, name="home"),
+    url(r'^user/(?P<user_id>\d+)/', views.user_view, name="user_view"),
 ]

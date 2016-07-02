@@ -41,3 +41,12 @@ def view_questions (request):
 def add_questions (request): 
     context = {}
     return render(request, 'add_questions.html', context)
+
+@login_required
+def user_view(request, user_id):
+    if request.POST:
+       1 
+    context = {}
+    
+
+    return render(request, 'user_view.html', context)

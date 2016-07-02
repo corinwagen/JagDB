@@ -51,6 +51,17 @@ class AuthUser(models.Model):
     is_active = models.IntegerField()
     date_joined = models.DateTimeField()
 
+    def __unicode__(self) :
+        if self.first_name and self.last_name:
+            return u'%s %s'.format(self.first_name, self.last_name)
+        elif self.first_name:
+            return u'%s'.format(self.first_name)
+        elif self.username:
+            return u'%s'.format(self.username)
+        else:
+            return u''
+
+
     class Meta:
         managed = False
         db_table = 'auth_user'

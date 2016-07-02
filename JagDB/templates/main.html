@@ -19,10 +19,10 @@
                     </li>
                     <li style="float:right;">
                         <span class=jagdb_user_messages>
-                            Currently logged in as {{ user.username }} 
+                            Currently logged in as {{ user }} 
                             <br>
                             <button class="btn btn-xs btn-default"> <a href="{% url 'logout' %}?next={% url 'login' %}"> Logout </a> </button>
-                            <button class="btn btn-xs btn-default"> <a href> View Profile </a> </button>
+                            <button class="btn btn-xs btn-default"> <a href="{% url 'user_view' user_id=user.id %}"> View Profile </a> </button>
                         </span>
                     </li>
                 </ul>
