@@ -54,7 +54,9 @@
                         {{ question.category }} 
                     </td>
                     <td>
-                        {{ question.text }}
+                        {% autoescape off %}
+                            {{ question.text }}
+                        {% endautoescape %}
                     </td>
                 </tr>
             {% endfor %}

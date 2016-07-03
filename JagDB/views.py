@@ -26,7 +26,9 @@ def view_questions (request):
 #    bonuses = Bonus.objects.filter(question__icontains=question, answer__icontains=answer, packet__tournament__difficulty__range=(min_diff, max_diff))
     
     for tossup in tossups[:50]:
-        tossup_text = "{} <strong> {} </strong>".format(tossup.question.encode("utf-8"), tossup.answer.encode("utf-8"))
+        tossup_text = "{} <br> ANSWER: {} ".format(tossup.question.encode("utf-8"), tossup.answer.encode("utf-8"))
+        tossup_text = tossup_text.replace("<req>", "<strong> <u>")
+        tossup_text = tossup_text.replace("</req>", "</u> </strong>")
         tossup_dict = {"text": tossup_text.decode('utf-8'), "category": tossup.subject.subject}
         questions.append(tossup_dict)
 
