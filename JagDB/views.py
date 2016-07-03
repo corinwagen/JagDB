@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from question_categorizer.models import Tossup, Bonus
+from question_categorizer.models import Tossup, Bonus, AuthUser
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 import datetime
@@ -44,9 +44,34 @@ def add_questions (request):
 
 @login_required
 def user_view(request, user_id):
-    if request.POST:
-       1 
     context = {}
-    
+    user = AuthUser.objects.get(id=user_id)
+    if request.POST:
+        user.username   = request.POST.get("username", user.username)
+        user.first_name = request.POST.get("first_name", user.first_name)
+        user.last_name  = request.POST.get("last_name", user.last_name)
+        user.email      = request.POST.get("email", user.email)
+        user.save()
+
+    request.user.refresh_from_db()
+
+    t_added = Tossup.objects.filter(created_by__id = user_id).count()
+    b_added = Bonus.objects.filter(created_by__id = user_id).count()
+    a_added = t_added + b_added
+  
+    t_count = Tossup.objects.count()
+    b_count = Bonus.objects.count()
+    a_count = t_count + b_count
+   
+    t_percent = "{percent:.2%}".format(percent=(t_added / t_count)) 
+    b_percent = "{percent:.2%}".format(percent=(b_added / b_count)) 
+    a_percent = "{percent:.2%}".format(percent=(a_added / a_count))
+
+    stats = []
+    stats.append({"name": "questions", "num": a_added, "percent": a_percent})
+    stats.append({"name": "tossups", "num": t_added, "percent": t_percent})
+    stats.append({"name": "bonuses", "num": b_added, "percent": b_percent})
+
+    context["stats"] = stats
 
     return render(request, 'user_view.html', context)

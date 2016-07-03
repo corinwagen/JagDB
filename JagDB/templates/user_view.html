@@ -2,5 +2,32 @@
 
 {% block title %} User Profile {% endblock %}
 {% block content %} 
-    <p> Username is  {{ user.username }} </p>
+    <table style="width:90%;"> 
+        <tr> 
+            <th> <h4> Edit Info for {{ user }} </h4> </th>
+            <th> <h4> User Stats </h4> </th> 
+        </tr> 
+        <tr> 
+            <td style="vertical-align:top; padding:6px; width:50%;">
+                <form action="" method="post"> {% csrf_token %}
+                    <p> 
+                        Username:  <input type="text" size="30"  class=form-control name="username" value="{{user.username}}" id="username"> <br>
+                        First Name:  <input type="text" size="30" class=form-control name="first_name" value="{{user.first_name}}" id="first_name"> <br>
+                        Last Name:  <input type="text" size="30" class=form-control name="last_name" value="{{user.last_name}}" id="last_name"> <br>
+                        Email:  <input type="text" size="30" class=form-control name="email" value="{{user.email}}" id="email"> <br>
+                    </p>
+                    <button class="btn btn-default" type="submit"> Submit </button>
+                </form>
+            </td>
+            <td style="vertical-align:top; padding:6px; width:50%;">
+                    <ul>
+                        {% for type in stats %}
+                            <li>
+                                {{ type.num }} {{ type.name }} added ({{ type.percent}} of total)
+                            </li>
+                        {% endfor %}
+                    </ul>
+            </td>
+        </tr>
+    </table>
 {% endblock %}

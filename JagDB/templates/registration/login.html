@@ -4,12 +4,16 @@
     <div class=container>
         <div class="well jagdb_login_container">
             <form action="" method="post"> {% csrf_token %}
-                <br>
                 <div>
                     <span class=jagdb_logo_big style="display:inline-block; width:100%; text-align:center;"> JagDB </span>
                 </div>
                 <br>
                 <br>
+                <div style="height: 30px; width: 300px;">
+                    {% if form.errors %}
+                        <p class="error" style="color:red;">Sorry, that's not valid.</p>
+                    {% endif %}
+                </div>
                 <p style="text-align:center;"> 
                     Username: <br> 
                     <input type="text" class=form-control name="username" value="" id="username"> <br>
@@ -17,9 +21,6 @@
                     <input type="password" class=form-control name="password" value="" id="password"> <br>
                     <button class="btn btn-large btn-default" type="submit"> Login </button>
                 </p>
-                {% if form.errors %}
-                    <p class="error">Sorry, that's not a valid username or password</p>
-                {% endif %}
                 <input type="hidden" name="next" value="{% url 'home' %}" />
             </form>
         </div>
