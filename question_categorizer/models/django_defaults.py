@@ -53,11 +53,11 @@ class AuthUser(models.Model):
 
     def __unicode__(self) :
         if self.first_name and self.last_name:
-            return u'%s %s'.format(self.first_name, self.last_name)
+            return u'{} {}'.format(self.first_name, self.last_name)
         elif self.first_name:
-            return u'%s'.format(self.first_name)
+            return u'{}'.format(self.first_name)
         elif self.username:
-            return u'%s'.format(self.username)
+            return u'{}'.format(self.username)
         else:
             return u''
 

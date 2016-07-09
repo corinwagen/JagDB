@@ -29,4 +29,7 @@ urlpatterns = [
     url(r'^__debug__/', debug_toolbar.urls),
     url(r'^home/', views.home, name="home"),
     url(r'^user/(?P<user_id>\d+)/', views.user_view, name="user_view"),
+    url(r'^flag_question/$', views.flag_question, name="flag_question"),
+    url(r'^unflag_question/$', views.unflag_question, name="unflag_question"),
+    url(r'', views.home),
 ]
