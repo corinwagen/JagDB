@@ -41,8 +41,6 @@ def view_questions (request):
     if prev_page < 1:
         prev_page = 1
  
-    warnings.warn(str(min_question) + "  " + str(max_question))
-  
     if (quest_type == "tossup"): 
         tossups = Tossup.objects.filter(question__icontains=question, answer__icontains=answer, packet__tournament__difficulty__range=(min_diff, max_diff))
         tossups = tossups.order_by(order_by)
@@ -62,7 +60,7 @@ def view_questions (request):
                 tournament_list.append(Q(packet__tournament__id=tournament_id))
             
             tossups = tossups.filter(reduce(operator.or_, tournament_list))
-        
+
         for tossup in tossups[min_question:max_question]:
             questions.append(tossup.objectify())
 
@@ -92,7 +90,7 @@ def view_questions (request):
                 tournament_list.append(Q(packet__tournament__id=tournament_id))
             
             bonuses = bonuses.filter(reduce(operator.or_, tournament_list))
-            
+        
         for bonus in bonuses[min_question:max_question]:
             questions.append(bonus.objectify())
 
@@ -187,3 +185,126 @@ def unflag_question(request):
         return JsonResponse({'success': success,}) 
     else: 
         return JsonResponse({'success': 0})
+
+
+@login_required
+def export(request):
+    context     = {}
+    questions   = []
+    question    = request.GET.get('question', '')  
+    answer      = request.GET.get('answer', '')
+    min_diff    = int(request.GET.get('min_diff', 1))
+    max_diff    = int(request.GET.get('max_diff', 10))
+    subjects    = request.GET.getlist('subjects', '')
+    tournaments = request.GET.getlist('tournaments', '')
+    flagged     = request.GET.get("flagged", '')
+    quest_type  = request.GET.get("type", 'tossup')
+    order_by    = request.GET.get('order_by', 'packet__tournament__difficulty');
+    
+    if (quest_type == "tossup"): 
+        tossups = Tossup.objects.filter(question__icontains=question, answer__icontains=answer, packet__tournament__difficulty__range=(min_diff, max_diff))
+        tossups = tossups.order_by(order_by)
+        if flagged: 
+            tossups=tossups.filter(flagged=flagged) 
+    
+        if subjects : 
+            subject_list = []
+            for subject_id in subjects:
+                subject_list.append(Q(subject__id=subject_id))
+                
+            tossups = tossups.filter(reduce(operator.or_, subject_list))
+        
+        if tournaments: 
+            tournament_list = []
+            for tournament_id in tournaments:
+                tournament_list.append(Q(packet__tournament__id=tournament_id))
+            
+            tossups = tossups.filter(reduce(operator.or_, tournament_list))
+
+        for tossup in tossups:
+            questions.append(tossup.objectify())
+
+    elif (quest_type == "bonus"): 
+        bonuses = Bonus.objects.filter(packet__tournament__difficulty__range=(min_diff, max_diff))
+        question_text_list = []
+        for field in ["leadin", "part1", "part2", "part3"]:
+           question_text_list.append(Q(**{field + "__icontains": question})) 
+        bonuses = bonuses.filter(reduce(operator.or_, question_text_list))
+        answer_text_list = []
+        for field in ["answer1", "answer2", "answer3"]:
+           answer_text_list.append(Q(**{field + "__icontains": answer})) 
+        bonuses = bonuses.filter(reduce(operator.or_, answer_text_list))
+        if flagged: 
+            bonuses=bonuses.filter(flagged=flagged) 
+    
+        if subjects : 
+            subject_list = []
+            for subject_id in subjects:
+                subject_list.append(Q(subject__id=subject_id))
+                
+            bonuses = bonuses.filter(reduce(operator.or_, subject_list))
+        
+        if tournaments: 
+            tournament_list = []
+            for tournament_id in tournaments:
+                tournament_list.append(Q(packet__tournament__id=tournament_id))
+            
+            bonuses = bonuses.filter(reduce(operator.or_, tournament_list))
+
+        for bonus in bonuses:
+            questions.append(bonus.objectify())
+
+    context["questions"] = questions 
+    return render(request, 'export.html', context) 
+
+@login_required 
+def edit_question(request, type, question_id):
+    context = {}
+    question = ''
+    if type == "tossup":
+        question = Tossup.objects.get(id=question_id)
+        if request.POST:
+            question.question       = request.POST.get("question_text", question.question)
+            question.answer         = request.POST.get("answer", question.answer)
+            question.packet_id      = request.POST.get("packet_id", question.packet.id)
+            question.subject_id     = request.POST.get("subject_id", question.subject_id)
+            question.updated_by_id  = request.user.id
+            question.updated_at     = datetime.datetime.now()
+            question.save()
+    elif type == "bonus":
+        question = Bonus.objects.get(id=question_id)
+        if request.POST:
+            question.leadin         = request.POST.get("leadin", question.leadin)
+            question.part1          = request.POST.get("part1", question.part1)
+            question.part2          = request.POST.get("part2", question.part2)
+            question.part3          = request.POST.get("part3", question.part3)
+            question.answer1        = request.POST.get("answer1", question.answer1)
+            question.answer2        = request.POST.get("answer2", question.answer2)
+            question.answer3        = request.POST.get("answer3", question.answer3)
+            question.packet_id      = request.POST.get("packet_id", question.packet.id)
+            question.subject_id     = request.POST.get("subject_id", question.subject_id)
+            question.updated_by_id  = request.user.id
+            question.updated_at     = datetime.datetime.now()
+            question.save()
+    
+    context["question"] = question
+    context["subject_list"] = Subject.objects.all()
+    return render(request, 'edit_question.html', context)    
+
+@login_required
+def delete_question(request):
+    if request.method == 'GET':
+        id=int(request.GET.get('id', ''))
+        type=request.GET.get('type', '')
+        if (type == "tossup"): 
+            question = Tossup.objects.get(id=id)
+        else:
+            question = Bonus.objects.get(id=id)
+        success = 1
+        question.delete()
+       
+        return JsonResponse({'success': success,}) 
+    else: 
+        return JsonResponse({'success': 0})
+
+

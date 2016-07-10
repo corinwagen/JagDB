@@ -14,6 +14,9 @@ class Tossup(models.Model):
     created_by = models.ForeignKey("AuthUser", related_name="created_by")
     updated_by = models.ForeignKey("AuthUser", related_name="updated_by")
 
+    def type(self):
+        return "tossup"
+
     def flag_question(self):
         self.flagged = "t"
         self.save()
@@ -73,6 +76,9 @@ class Bonus(models.Model):
     created_by = models.ForeignKey("AuthUser", related_name="bonus_created_by")
     updated_by = models.ForeignKey("AuthUser", related_name="bonus_updated_by")
     
+    def type(self):
+        return "bonus"
+
     def flag_question(self):
         self.flagged = "t"
         self.save()

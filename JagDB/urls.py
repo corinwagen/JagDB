@@ -31,5 +31,8 @@ urlpatterns = [
     url(r'^user/(?P<user_id>\d+)/', views.user_view, name="user_view"),
     url(r'^flag_question/$', views.flag_question, name="flag_question"),
     url(r'^unflag_question/$', views.unflag_question, name="unflag_question"),
+    url(r'^export/$', views.export, name="export"),
+    url(r'^edit_question/(?P<type>[a-z]+)/(?P<question_id>\d+)/', views.edit_question, name="edit_question"),
+    url(r'^delete_question/$', views.delete_question, name="delete_question"),
     url(r'', views.home),
 ]

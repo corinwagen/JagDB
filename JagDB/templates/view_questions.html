@@ -110,6 +110,7 @@
                 <td>
                     <input type=hidden id=page_num name=page value="{{ page }}" />   
                     <button class="btn btn-default" type=submit id=filter_button> Filter </button>
+                    <button class="btn btn-default" type=submit formaction="{% url 'export' %}" id=export_button> Export </button>
                 </td>
             </tr>
         </table> 
@@ -164,7 +165,12 @@
                             <br> 
                             <button id="info_{{ question.id }}" class="btn btn-sm btn-default info"> Info </button>
                             {% if perms.question_categorizer.can_edit_and_delete %}
-                                <br> <button id="edit_{{ question.id }}" class="btn btn-sm btn-primary edit"> Edit </button>
+                                <br> 
+                                <button id="edit_{{ question.id }}" class="btn btn-sm btn-primary edit" 
+                                    onclick="window.location.href='{% url 'edit_question' question.type question.id %}'">
+                                        Edit 
+                                    </a>
+                                </button>
                             {% endif %} 
                         </span>
                     </td>
