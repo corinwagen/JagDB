@@ -6,7 +6,7 @@
 {% endblock %} 
 
 {% block content %}
-    <form role=form> 
+    <form role=form id=filter> 
         <h4> Filter Questions </h4> 
         <table class=table-condensed> 
             <tr>
@@ -40,15 +40,17 @@
                 </td>
                 <td>
                     <select name=order_by id=order_by_select class=form-control>
-                        <option value="-packet__tournament__year" {% if order_by == "-packet__tournament__year" %} selected {% endif %}> 
-                            Year Desc 
+                        <option value="packet__tournament__difficulty" 
+                            {% if order_by == "packet__tournament__difficulty" %} selected {% endif %}> 
+                            Difficulty Asc 
                         </option>
-                        <option value="packet__tournament__year" {% if order_by == "packet__tournament__year" %} selected {% endif %}> Year Asc </option>
-                        <option value="-packet__tournament__difficulty" {% if order_by == "-packet__tournament__difficulty" %} selected {% endif %}> 
+                        <option value="-packet__tournament__difficulty" 
+                            {% if order_by == "-packet__tournament__difficulty" %} selected {% endif %}> 
                             Difficulty Desc 
                         </option>
-                        <option value="packet__tournament__difficulty" {% if order_by == "packet__tournament__difficulty" %} selected {% endif %}> 
-                            Difficulty Asc 
+                        <option value="packet__tournament__year" {% if order_by == "packet__tournament__year" %} selected {% endif %}> Year Asc </option>
+                        <option value="-packet__tournament__year" {% if order_by == "-packet__tournament__year" %} selected {% endif %}> 
+                            Year Desc 
                         </option>
                         <option value="subject__id" {% if order_by == "subject__id" %} selected {% endif %}> Subject </option>
                         <option value="?" {% if order_by == "?" %} selected {% endif %}> Randomly </option>
@@ -106,7 +108,8 @@
                     </select> 
                 </td>
                 <td>
-                    <button class="btn btn-default" type=submit> Filter </button>
+                    <input type=hidden id=page_num name=page value="{{ page }}" />   
+                    <button class="btn btn-default" type=submit id=filter_button> Filter </button>
                 </td>
             </tr>
         </table> 
@@ -120,7 +123,13 @@
             <th>
                 Question
             </th>
-            <td />
+            <td nowrap>
+                {% if prev_page != 1 %}
+                    <a href="?page={{ prev_page }}">Prev</a>
+                    &nbsp;
+                {% endif %} 
+                <a href="?page={{ next_page }}">Next</a>
+            </td>
         </thead>
         <tbody>
             {% if questions|length = 0 %}
@@ -151,10 +160,11 @@
                                         {% if question.flagged == False %} style="display:none;" {% endif %}> 
                                         Unflag 
                                     </button>
-                            {% endif %} 
+                            {% endif %}
+                            <br> 
                             <button id="info_{{ question.id }}" class="btn btn-sm btn-default info"> Info </button>
                             {% if perms.question_categorizer.can_edit_and_delete %}
-                                <button id="edit_{{ question.id }}" class="btn btn-sm btn-primary edit"> Edit </button>
+                                <br> <button id="edit_{{ question.id }}" class="btn btn-sm btn-primary edit"> Edit </button>
                             {% endif %} 
                         </span>
                     </td>
@@ -167,6 +177,16 @@
                     <td />
                 </tr> 
             {% endfor %}
+            <tr>
+                <td colspan=2 />
+                <td nowrap>
+                    {% if prev_page != 1 %}
+                        <a href="?page={{ prev_page }}">Prev</a>
+                        &nbsp;
+                    {% endif %} 
+                    <a href="?page={{ next_page }}">Next</a>
+                </td>
+            </tr>
         </tbody>
     </table>
     <script>
@@ -226,7 +246,6 @@
             $(this).find(".button_container").css("visibility", "hidden");
         });    
             
-
         $("#slider").slider({
             max: 10,
             min: 1,

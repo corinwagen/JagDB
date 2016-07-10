@@ -4,10 +4,12 @@ from question_categorizer.models import Tossup, Bonus, AuthUser, Subject, Tourna
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import datetime
 import operator
 import warnings 
 import pickle
+
 
 @login_required
 def home(request):
@@ -27,7 +29,19 @@ def view_questions (request):
     flagged     = request.GET.get("flagged", '')
     quest_type  = request.GET.get("type", 'tossup')
     order_by    = request.GET.get('order_by', 'packet__tournament__difficulty');
-    display_num = int(request.GET.get("num", '50'))
+    display_num = int(request.GET.get("num", 50))
+    page_num    = int(request.GET.get("page", 1))
+
+    if page_num < 1:
+        page_num = 1 
+    min_question = (page_num - 1) * display_num
+    max_question = page_num * display_num
+
+    prev_page = page_num - 1
+    if prev_page < 1:
+        prev_page = 1
+ 
+    warnings.warn(str(min_question) + "  " + str(max_question))
   
     if (quest_type == "tossup"): 
         tossups = Tossup.objects.filter(question__icontains=question, answer__icontains=answer, packet__tournament__difficulty__range=(min_diff, max_diff))
@@ -49,7 +63,7 @@ def view_questions (request):
             
             tossups = tossups.filter(reduce(operator.or_, tournament_list))
         
-        for tossup in tossups[:display_num]:
+        for tossup in tossups[min_question:max_question]:
             questions.append(tossup.objectify())
 
     elif (quest_type == "bonus"): 
@@ -79,7 +93,7 @@ def view_questions (request):
             
             bonuses = bonuses.filter(reduce(operator.or_, tournament_list))
             
-        for bonus in bonuses[:display_num]:
+        for bonus in bonuses[min_question:max_question]:
             questions.append(bonus.objectify())
 
     subject_list = Subject.objects.all()
@@ -96,7 +110,10 @@ def view_questions (request):
     context["max_diff"]         = max_diff
     context["flagged"]          = flagged
     context["type"]             = quest_type 
-    context["order_by"]         = order_by
+    context["num"]              = display_num
+    context["page"]             = page_num
+    context["prev_page"]        = prev_page
+    context["next_page"]        = page_num + 1
     return render(request, 'view_questions.html', context)
 
 @login_required
