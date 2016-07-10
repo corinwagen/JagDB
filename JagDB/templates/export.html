@@ -1,0 +1,7 @@
+{% for question in questions %}
+    {% autoescape off %}
+        {{ question.text }} 
+        <br>
+        <br>
+    {% endautoescape %}
+{% endfor %}

@@ -1,0 +1,59 @@
+{% extends 'main.html' %}
+{% load tags_django_should_have %}
+
+{% block title %}
+    Edit {{ question.type|capfirst }} {{ question.id}} 
+{% endblock %} 
+
+{% block content %}
+    <a href="{% url 'view_questions' %}"> Back to Question View </a>
+    <form action="" method="post"> {% csrf_token %}
+        <input type=hidden name=id value="{{question.id}}">
+        <input type=hidden name=type value="{{question.type}}">
+        <h4> 
+            Edit {{ question.type|capfirst }} {{ question.id}} 
+        </h4> 
+        <p> 
+            {% if question.type == "tossup" %}
+                Question:  <textarea rows=10 cols=80  class=form-control name="question_text"> {{question.question}} </textarea><br>
+                Answer:  <input type="text" class=form-control name="answer" value="{{question.answer}}"> <br>
+            {% else %}
+                Leadin:  <textarea rows=3 cols=80  class=form-control name="leadin"> {{question.leadin}} </textarea><br>
+                Part 1:  <textarea rows=3 cols=80  class=form-control name="part1"> {{question.part1}} </textarea><br>
+                Answer 1:  <input type="text" class=form-control name="answer1" value="{{question.answer1}}"> <br>
+                Part 2:  <textarea rows=3 cols=80  class=form-control name="part2"> {{question.part2}} </textarea><br>
+                Answer 2:  <input type="text" class=form-control name="answer2" value="{{question.answer2}}"> <br>
+                Part 3:  <textarea rows=3 cols=80  class=form-control name="part3"> {{question.part3}} </textarea><br>
+                Answer 3:  <input type="text" class=form-control name="answer3" value="{{question.answer3}}"> <br>
+            {% endif %} 
+            Subject: 
+            <select name=subject_id id=subject_select class=form-control>
+                {% for row in subject_list %}
+                    <option value="{{ row.id }}" {% if row.id == question.subject_id|add:"0" %} selected {% endif %}> 
+                        {{row.subject}}
+                    </option>
+                {% endfor %}
+            </select> 
+            <br>
+        </p>
+        <button class="btn btn-default" type="submit"> Submit </button>
+        <button id=delete_button class="btn btn-danger" type="button"> Delete</button>
+    </form>
+
+    <script>
+        $('#delete_button').on("click", function () {
+            var id = $("[name=id]").val();
+            var type = $("[name=type]").val();
+            $.ajax({
+                cache: false,
+                data: {id: id, type: type},
+                url: "{% url 'delete_question'  %}",
+                success: function (data) {
+                    if (data.success) {
+                        window.location.href = "{% url 'view_questions' %}";
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

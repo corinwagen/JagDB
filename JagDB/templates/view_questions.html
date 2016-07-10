@@ -1,0 +1,270 @@
+{% extends 'main.html' %}
+{% load tags_django_should_have %}
+
+{% block title %}
+    View Questions 
+{% endblock %} 
+
+{% block content %}
+    <form role=form id=filter> 
+        <h4> Filter Questions </h4> 
+        <table class=table-condensed> 
+            <tr>
+                <td> Question contains: </td>
+                <td> <input type=text name=question value="{{ question }}"> </td>
+                <td> 
+                    Difficulty: 
+                    <input name="difficulty" type="text" readonly style="border:0;"> 
+                </td>
+                <td />
+                <td>
+                    Order By:
+                </td>
+                <td>
+                    Flagged:
+                </td>
+                <td>
+                    Type:
+                </td>
+                <td>
+                    Num:
+                </td>
+            <tr>
+            </tr>
+                <td> Answer contains: </td>
+                <td> <input type=text name=answer value="{{ answer }}"> </td>
+                <td colspan=2>
+                    <div id="slider" style="width:300px"> </div>
+                    <input type=hidden name=min_diff value="{{ min_diff }}" />
+                    <input type=hidden name=max_diff value="{{ max_diff }}" />
+                </td>
+                <td>
+                    <select name=order_by id=order_by_select class=form-control>
+                        <option value="packet__tournament__difficulty" 
+                            {% if order_by == "packet__tournament__difficulty" %} selected {% endif %}> 
+                            Difficulty Asc 
+                        </option>
+                        <option value="-packet__tournament__difficulty" 
+                            {% if order_by == "-packet__tournament__difficulty" %} selected {% endif %}> 
+                            Difficulty Desc 
+                        </option>
+                        <option value="packet__tournament__year" {% if order_by == "packet__tournament__year" %} selected {% endif %}> Year Asc </option>
+                        <option value="-packet__tournament__year" {% if order_by == "-packet__tournament__year" %} selected {% endif %}> 
+                            Year Desc 
+                        </option>
+                        <option value="subject__id" {% if order_by == "subject__id" %} selected {% endif %}> Subject </option>
+                        <option value="?" {% if order_by == "?" %} selected {% endif %}> Randomly </option>
+                    </select>
+                </td>
+                <td>
+                    <select name=flagged id=flagged_select class=form-control>
+                        <option value="" {% if flagged == False %} selected {% endif %}> Any </option> 
+                        <option value="t" {% if flagged == "t" %} selected {% endif %}> Yes </option> 
+                        <option value="f" {% if flagged == "f" %} selected {% endif %}> No </option> 
+                    </select>
+                </td>
+                <td>
+                    <select name=type id=type_select class=form-control>
+                        <option value="tossup" {% if type != "bonus" %} selected {% endif %}> Tossups </option> 
+                        <option value="bonus" {% if type == "bonus" %} selected {% endif %}> Bonuses </option> 
+                    </select>
+                </td>
+                <td>
+                    <select name=num id=num_select class=form-control>
+                        <option value="10" {% if num == 10 %} selected {% endif %}> 10 </option> 
+                        <option value="20" {% if num == 20 %} selected {% endif %}> 20 </option> 
+                        <option value="50" {% if num == 50 %} selected {% endif %}> 50 </option> 
+                        <option value="100" {% if num == 100 %} selected {% endif %}> 100 </option> 
+                    </select>
+                </td>
+            <tr>
+            </tr>
+                <td>
+                    Category:
+                </td>
+                <td>
+                    Tournament:
+                </td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <select name=subjects id=subject_select multiple class=form-control>
+                        {% for row in subject_list %}
+                            <option value="{{ row.id }}" {% if row.id|in:subjects %} selected  {% endif %}> 
+                                {{row.subject}}
+                            </option>
+                        {% endfor %}
+                    </select> 
+                </td>
+                <td>
+                    <select name=tournaments id=tournament_select multiple class=form-control>
+                        {% for row in tournament_list %}
+                            <option value="{{ row.id }}" {% if row.id|in:tournaments %} selected  {% endif %}> 
+                                {{row}}
+                            </option>
+                        {% endfor %}
+                    </select> 
+                </td>
+                <td>
+                    <input type=hidden id=page_num name=page value="{{ page }}" />   
+                    <button class="btn btn-default" type=submit id=filter_button> Filter </button>
+                    <button class="btn btn-default" type=submit formaction="{% url 'export' %}" id=export_button> Export </button>
+                </td>
+            </tr>
+        </table> 
+    </form>
+
+    <table class=table> 
+        <thead>
+            <th>
+                Category
+            </th>
+            <th>
+                Question
+            </th>
+            <td nowrap>
+                {% if prev_page != 1 %}
+                    <a href="?page={{ prev_page }}">Prev</a>
+                    &nbsp;
+                {% endif %} 
+                <a href="?page={{ next_page }}">Next</a>
+            </td>
+        </thead>
+        <tbody>
+            {% if questions|length = 0 %}
+                <tr>  
+                    <td>
+                        No questions match the specified filter. 
+                    </td>
+                </tr>  
+            {% endif %}
+            {% for question in questions %} 
+                <tr {% if question.flagged == True %} class="danger {{ question.type }}" {% else %} class="{{question.type}}" {% endif %}>
+                    <td>
+                        {{ question.category }} 
+                    </td>
+                    <td>
+                        {% autoescape off %}
+                            {{ question.text }}
+                        {% endautoescape %}
+                    </td>
+                    <td>
+                        <span class="button_container" style="visibility:hidden;">
+                            {% if perms.question_categorizer.can_add_and_flag %}
+                                    <button id="flag_{{ question.id }}" class="btn btn-sm btn-danger flag" 
+                                        {% if question.flagged == True %} style="display:none;" {% endif %}> 
+                                        Flag 
+                                    </button>
+                                    <button id="unflag_{{ question.id }}" class="btn btn-sm btn-success unflag" 
+                                        {% if question.flagged == False %} style="display:none;" {% endif %}> 
+                                        Unflag 
+                                    </button>
+                            {% endif %}
+                            <br> 
+                            <button id="info_{{ question.id }}" class="btn btn-sm btn-default info"> Info </button>
+                            {% if perms.question_categorizer.can_edit_and_delete %}
+                                <br> 
+                                <button id="edit_{{ question.id }}" class="btn btn-sm btn-primary edit" 
+                                    onclick="window.location.href='{% url 'edit_question' question.type question.id %}'">
+                                        Edit 
+                                    </a>
+                                </button>
+                            {% endif %} 
+                        </span>
+                    </td>
+                </tr>
+                <tr style="display:none;" {% if question.flagged == True %} class=danger{% endif %}>
+                    <td />
+                    <td>
+                        {{ question.info }}
+                    </td>
+                    <td />
+                </tr> 
+            {% endfor %}
+            <tr>
+                <td colspan=2 />
+                <td nowrap>
+                    {% if prev_page != 1 %}
+                        <a href="?page={{ prev_page }}">Prev</a>
+                        &nbsp;
+                    {% endif %} 
+                    <a href="?page={{ next_page }}">Next</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        $(".flag").on("click", function () {
+            var id = $(this).attr("id").substr(5);
+            var tr = $(this).closest('tr');
+            var type; 
+            if (tr.hasClass("tossup")) {
+                type = "tossup";
+            } else {
+                type = "bonus"; 
+            }
+            $.ajax({
+                cache: false,
+                dataType: 'JSON',
+                data: {id: id, type: type, csrf_token: "{% csrf_token %}" }, 
+                url: "{% url 'flag_question' %}",
+                success: function (data) {
+                    tr.addClass('danger');
+                    tr.next().addClass('danger');
+                    tr.find('.flag').toggle();
+                    tr.find('.unflag').toggle();
+                }
+            });
+        });
+
+        $(".unflag").on("click", function () {
+            var id = $(this).attr("id").substr(7);
+            var tr = $(this).closest('tr');
+            var type; 
+            if (tr.hasClass("tossup")) {
+                type = "tossup";
+            } else {
+                type = "bonus"; 
+            }
+            $.ajax({
+                cache: false,
+                dataType: 'JSON',
+                data: {id: id, type: type, csrf_token: "{% csrf_token %}" }, 
+                url: "{% url 'unflag_question' %}",
+                success: function (data) {
+                    tr.removeClass('danger');
+                    tr.next().removeClass('danger');
+                    tr.find('.flag').toggle();
+                    tr.find('.unflag').toggle();
+                }
+            });
+        });
+
+        $(".info").on("click", function () {
+            $(this).closest("tr").next().toggle();
+        });
+
+        $("tr").on("mouseover", function () {
+            $(this).find(".button_container").css("visibility", "visible");
+        }).on("mouseout", function() {
+            $(this).find(".button_container").css("visibility", "hidden");
+        });    
+            
+        $("#slider").slider({
+            max: 10,
+            min: 1,
+            orientation: "horizontal", 
+            range: true, 
+            values: [{{ min_diff }}, {{ max_diff }}],
+            slide: function (event, ui) {
+                $("[name=difficulty]").val(ui.values[0] + " - " + ui.values[1]);
+                $("[name=min_diff]").val(ui.values[0]);
+                $("[name=max_diff]").val(ui.values[1]);
+            }
+        });
+
+        $("[name=difficulty]").val($("#slider").slider("values", 0) +  " - " + $("#slider").slider("values", 1));
+    </script> 
+{% endblock %} 
