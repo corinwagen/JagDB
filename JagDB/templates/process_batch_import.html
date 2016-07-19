@@ -1,0 +1,58 @@
+{% extends 'main.html' %} 
+
+{% block title %}
+    Add Questions
+{% endblock %}
+
+{% block content %}
+    <h4> Step 2: Verify Questions and Add Subjects </h4>
+    
+    {% if alerts|length != 0 %}
+        <strong style="color:#FF0000"> Alerts: </strong>
+        {% for alert in alerts %}
+            <p style="color:#FF0000"> {{ alert }} </p>
+        {% endfor %}
+    {% endif %}
+    
+    <div id=question_container>
+        <table class=table>
+            <th colspan=2>
+                Subject
+            </th>
+            <th />
+            <th colspan=5>
+                Packet {{packet}} from {{ tournament }} 
+            </th>
+            {% for question in questions %}
+                <tr>
+                    <td colspan=2>
+                        <select id=subject_id_select name=subject_id class=form-control style="width:100%;">
+                            {% for row in subject_list %}
+                                <option value="{{ row.id }}"> 
+                                    {{row.subject}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        {{ question.number }}.
+                    </td>
+                    <td colspan=5>
+                        {% autoescape off %}
+                            <textarea name="question_{{ question.number }}" class=form-control rows=10 cols=80>{{ question.question_text }}</textarea>   
+                            <br> 
+                            <span title="Enclose the required part of the answer in <req> </req> for proper formatting and parsing.">
+                                ANSWER: <input class="form-control" type="text" name="answer_{{ question.number }}" value="{{ question.answer }}" />
+                            </span>
+                        {% endautoescape %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <script>
+        $( function () {
+            $("span").tooltip();
+        });
+    </script>
+{% endblock %}

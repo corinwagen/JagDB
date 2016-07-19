@@ -5,5 +5,61 @@
 {% endblock %}
 
 {% block content %}
-    Add Questions
+    <h4> Step 1: Enter Questions </h4>
+    <form method=POST enctype="multipart/form-data" action="{% url 'process_batch_import'  %}"> {% csrf_token %}
+        <textarea rows=25 cols=100 name=batch_text placeholder="(paste packet here)"> 
+        </textarea>
+        <br>
+        <div id=info_container style="width:40%; margin-bottom:100px;">
+            <strong> Tournament: </strong>
+            <select name=tournament_id id=tournament_id_select class=form-control>
+                <option value="create_new">
+                    Create New Tournament
+                </option>
+                {% for row in tournament_list %}
+                    <option value="{{ row.id }}"> 
+                        {{row}}
+                    </option>
+                {% endfor %}
+            </select> 
+            <div id="new_tournament_container" style="margin-left:25px;"> 
+                <strong> Name: </strong>
+                <input type=text class=form-control name=new_tournament_name />
+                <strong> Year: </strong>
+                <input type=number class=form-control name=new_tournament_year />
+                <strong> Difficulty: </strong> 
+                <select class=form-control name=new_tournament_diff />
+                    <option value=1> 1 </option>
+                    <option value=2> 2 </option>
+                    <option value=3> 3 </option>
+                    <option value=4> 4 </option>
+                    <option value=5> 5 </option>
+                    <option value=6> 6 </option>
+                    <option value=7> 7 </option>
+                    <option value=8> 8 </option>
+                    <option value=9> 9 </option>
+                    <option value=10> 10 </option>
+                </select>
+            </div>
+            <strong> Packet Name: </strong>
+            <input type=text class=form-control name=packet_name/>
+            <br> 
+            <button type=submit class="btn btn-default"> Submit </button>
+            <br>
+            <br>
+        </div>
+    </form>
+
+    <script>
+        $("#tournament_id_select").on("change", function () {
+            if ($(this).val() == "create_new") {
+                $("#new_tournament_container").show(); 
+            } else {
+                $("#new_tournament_container").hide(); 
+                $("[name=new_tournament_name]").val('');
+                $("[name=new_tournament_year]").val('');
+                $("[name=new_tournament_diff]").val('');
+            }
+        });
+    </script>
 {% endblock %}

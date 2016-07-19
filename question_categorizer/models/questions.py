@@ -40,7 +40,7 @@ class Tossup(models.Model):
         
         obj  = {
             "text":     self.__unicode__, 
-            "category": self.subject.subject, 
+            "subject": self.subject.subject, 
             "id":       self.id, 
             "flagged":  self.is_flagged(), 
             "info":     info, 
@@ -102,7 +102,7 @@ class Bonus(models.Model):
         
         obj  = {
             "text":     self.__unicode__, 
-            "category": self.subject.subject, 
+            "subject": self.subject.subject, 
             "id":       self.id, 
             "flagged":  self.is_flagged(), 
             "info":     info, 

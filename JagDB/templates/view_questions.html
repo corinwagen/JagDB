@@ -119,7 +119,7 @@
     <table class=table> 
         <thead>
             <th>
-                Category
+                Subject 
             </th>
             <th>
                 Question
@@ -143,7 +143,7 @@
             {% for question in questions %} 
                 <tr {% if question.flagged == True %} class="danger {{ question.type }}" {% else %} class="{{question.type}}" {% endif %}>
                     <td>
-                        {{ question.category }} 
+                        {{ question.subject }} 
                     </td>
                     <td>
                         {% autoescape off %}
