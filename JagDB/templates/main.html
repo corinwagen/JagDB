@@ -38,10 +38,10 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script> 
         var current_page = location.pathname; 
-        if (current_page.match("add_questions")) {
+        if (current_page.match("add_questions") || current_page.match("process_batch_import")) {
             $("#add_link").addClass('active');
         } 
-        if (current_page.match("view_questions")) {
+        if (current_page.match("view_questions") || current_page.match("edit_question")) {
             $("#view_link").addClass('active');
         } 
         

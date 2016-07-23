@@ -25,6 +25,7 @@ def view_questions (request):
     order_by    = request.GET.get('order_by', 'packet__tournament__difficulty');
     display_num = int(request.GET.get("num", 50))
     page_num    = int(request.GET.get("page", 1))
+    packet_id   = request.GET.get("packet_id", '')
 
     if page_num < 1:
         page_num = 1 
@@ -37,6 +38,8 @@ def view_questions (request):
  
     if (quest_type == "tossup"): 
         tossups = Tossup.objects.filter(question__icontains=question, answer__icontains=answer, packet__tournament__difficulty__range=(min_diff, max_diff))
+        if packet_id : 
+            tossups = tossups.filter(packet_id=packet_id)
         tossups = tossups.order_by(order_by)
         if flagged: 
             tossups=tossups.filter(flagged=flagged) 
@@ -60,6 +63,8 @@ def view_questions (request):
 
     elif (quest_type == "bonus"): 
         bonuses = Bonus.objects.filter(packet__tournament__difficulty__range=(min_diff, max_diff))
+        if packet_id : 
+            bonuses = bonuses.filter(packet_id=packet_id)
         question_text_list = []
         for field in ["leadin", "part1", "part2", "part3"]:
            question_text_list.append(Q(**{field + "__icontains": question})) 

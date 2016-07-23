@@ -3,6 +3,7 @@ from django.db import models
 #from JagDB.question_categorizer.models import Packet, Subject
 
 class Tossup(models.Model):
+    id = models.AutoField(primary_key=True)
     question = models.TextField(blank=True, null=True)
     answer = models.TextField(blank=True, null=True)
     flagged = models.CharField(max_length=1, blank=True, null=True)
@@ -36,7 +37,8 @@ class Tossup(models.Model):
     def objectify(self):
         info = "Packet {} from {}. ".format(self.packet.name, self.packet.tournament)    
         info += "Created on {} by {}. ".format(self.created_at.strftime("%x"), self.created_by)
-        info += "Updated on {} by {}. ".format(self.updated_at.strftime("%x"), self.updated_by)
+        if self.updated_at:
+            info += "Updated on {} by {}. ".format(self.updated_at.strftime("%x"), self.updated_by)
         
         obj  = {
             "text":     self.__unicode__, 
@@ -60,6 +62,7 @@ class Tossup(models.Model):
 
 
 class Bonus(models.Model):
+    id = models.AutoField(primary_key=True)
     leadin = models.TextField(blank=True, null=True)
     part1 = models.TextField(blank=True, null=True)
     answer1 = models.TextField(blank=True, null=True)
@@ -98,7 +101,8 @@ class Bonus(models.Model):
     def objectify(self):
         info = "Packet {} from {}. ".format(self.packet.name, self.packet.tournament)    
         info += "Created on {} by {}. ".format(self.created_at.strftime("%x"), self.created_by)
-        info += "Updated on {} by {}. ".format(self.updated_at.strftime("%x"), self.updated_by)
+        if self.updated_at:
+            info += "Updated on {} by {}. ".format(self.updated_at.strftime("%x"), self.updated_by)
         
         obj  = {
             "text":     self.__unicode__, 

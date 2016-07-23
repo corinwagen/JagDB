@@ -7,8 +7,7 @@
 {% block content %}
     <h4> Step 1: Enter Questions </h4>
     <form method=POST enctype="multipart/form-data" action="{% url 'process_batch_import'  %}"> {% csrf_token %}
-        <textarea rows=25 cols=100 name=batch_text placeholder="(paste packet here)"> 
-        </textarea>
+        <textarea rows=25 cols=100 name=batch_text placeholder="(paste packet here)"> </textarea>
         <br>
         <div id=info_container style="width:40%; margin-bottom:100px;">
             <strong> Tournament: </strong>
@@ -29,7 +28,7 @@
                 <input type=number class=form-control name=new_tournament_year />
                 <strong> Difficulty: </strong> 
                 <select class=form-control name=new_tournament_diff />
-                    <option value=1> 1 </option>
+                    <option value=1> 1 </option> <!-- Could I have used a for loop? Yes, probably. Would that have been a better idea? Yes, probably. -->
                     <option value=2> 2 </option>
                     <option value=3> 3 </option>
                     <option value=4> 4 </option>
@@ -51,8 +50,17 @@
     </form>
 
     <script>
+        $(document).ready(function () {
+            refresh_new_tournament();
+        });
+
         $("#tournament_id_select").on("change", function () {
-            if ($(this).val() == "create_new") {
+            refresh_new_tournament();
+        });
+        
+        
+        function refresh_new_tournament() {
+            if ($("#tournament_id_select").val() == "create_new") {
                 $("#new_tournament_container").show(); 
             } else {
                 $("#new_tournament_container").hide(); 
@@ -60,6 +68,6 @@
                 $("[name=new_tournament_year]").val('');
                 $("[name=new_tournament_diff]").val('');
             }
-        });
+        };
     </script>
 {% endblock %}

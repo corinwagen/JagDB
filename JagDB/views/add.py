@@ -1,11 +1,12 @@
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from question_categorizer.models import Tossup, Bonus, AuthUser, Subject, Tournament, Packet
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import permission_required
+from django.core.urlresolvers import reverse
 import datetime
 import operator
 import warnings 
@@ -52,6 +53,7 @@ def process_batch_import(request):
         packet      = Packet(name=packet_name)
         packet.created_by_id  = request.user.id
         packet.created_at     = datetime.datetime.now()
+        packet.tournament_id  = context['tournament'].id
         packet.save()
         context['packet'] = packet
 
@@ -67,7 +69,7 @@ def process_batch_import(request):
     number = 1
     for question in questions : 
         question    = re.sub(r'\n', ' ', question)
-        question    = re.sub(r'\"', '\\"', question)
+        question    = re.sub(r'\"', '&quot;', question)
 
         question    = re.sub(r'^ \d{1,2}\.', '', question)
         parts       = re.split(r'ANSWER:', question)
@@ -82,6 +84,10 @@ def process_batch_import(request):
             alerts.append('Autoparsing question {} failed.'.format(number)) 
         formatted_questions.append({"number": number, "question_text": text, "answer": answer});    
         number += 1
+   
+    if 20 > len(questions) :
+        for num in range(len(questions) + 1, 21):  #### off-by-one error. lol. 
+            formatted_questions.append({"number": num, "question_text": '', "answer": '' });
     
     subject_list = Subject.objects.all()
     context['subject_list'] = subject_list
@@ -90,3 +96,32 @@ def process_batch_import(request):
     context["alerts"] = alerts
     context["batch_text"] = batch_text.encode('utf-8', 'xmlcharrefreplace')
     return render(request, 'process_batch_import.html', context)
+
+@login_required
+@permission_required('polls.can_add_and_flag')
+def batch_import(request):
+    context = {}
+    alerts  = []
+   
+    packet_id = request.POST.get('packet_id', None)
+    if packet_id is None: 
+        alerts.append("No packet ID - something has gone terribly wrong")
+    packet_id = packet_id.encode('utf-8')
+     
+    for num in xrange(1,30):   
+        question    = request.POST.get('question_{}'.format(num), None)
+        if question is None or question=='':
+            break
+        question    = question.encode('utf-8', 'xmlcharrefreplace') 
+        answer      = request.POST.get('answer_{}'.format(num), None)
+        if answer is None:
+            break
+        answer      = answer.encode('utf-8', 'xmlcharrefreplace') 
+        subject     = request.POST.get('subject_{}'.format(num), '')
+       
+        question_obj = Tossup(question=question, answer=answer, subject_id=subject, packet_id=packet_id)
+        question_obj.created_by_id  = request.user.id
+        question_obj.created_at     = datetime.datetime.now()
+        question_obj.save()
+    
+    return redirect("{}?packet_id={}".format(reverse('view_questions'), packet_id)); 

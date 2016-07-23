@@ -35,5 +35,6 @@ urlpatterns = [
     url(r'^edit_question/(?P<type>[a-z]+)/(?P<question_id>\d+)/', views.edit_question, name="edit_question"),
     url(r'^delete_question/$', views.delete_question, name="delete_question"),
     url(r'^process_batch_import', views.process_batch_import, name="process_batch_import"),
+    url(r'^batch_import', views.batch_import, name="batch_import"),
     url(r'', views.home),
 ]
