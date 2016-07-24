@@ -95,6 +95,14 @@ def view_questions (request):
 
     subject_list = Subject.objects.all()
     tournament_list = Tournament.objects.order_by("-year")
+
+    params = "question={}&answer={}&min_diff={}&max_diff={}&flagged={}&type={}&num={}&page={}&order_by={}".format(question, answer, min_diff, max_diff, flagged, quest_type, display_num, page_num, order_by,)
+    for subject in subjects:
+        params = params + "&subjects=" + subject
+    for tournament in tournaments:
+        params = params + "&tournaments=" + tournament
+  
+    warnings.warn(params)
    
     context["questions"]        = questions
     context["subjects"]         = subjects
@@ -105,11 +113,13 @@ def view_questions (request):
     context["answer"]           = answer 
     context["min_diff"]         = min_diff
     context["max_diff"]         = max_diff
+    context["order_by"]         = order_by
     context["flagged"]          = flagged
     context["type"]             = quest_type 
     context["num"]              = display_num
     context["page"]             = page_num
     context["prev_page"]        = prev_page
     context["next_page"]        = page_num + 1
+    context["params"]           = params
     return render(request, 'view_questions.html', context)
 

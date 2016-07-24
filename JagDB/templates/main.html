@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load admin_urls %}
 
 {% block body %}
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -11,12 +12,19 @@
                         &nbsp;
                         &nbsp;
                     </li>
-                    <li id=add_link class=jagdb_top_nav_link_parent >
-                        <a class=jagdb_top_nav_link href="{% url 'add_questions' %}" > Add Questions </a>
-                    </li>
+                    {% if perms.question_categorizer.can_add_and_flag %}
+                        <li id=add_link class=jagdb_top_nav_link_parent >
+                            <a class=jagdb_top_nav_link href="{% url 'add_questions' %}" > Add Questions </a>
+                        </li>
+                    {% endif %}
                     <li id=view_link class=jagdb_top_nav_link_parent >
                         <a class=jagdb_top_nav_link href="{% url 'view_questions' %}" > View Questions </a>
                     </li>
+                    {% if user.is_staff or user.is_superuser %}
+                        <li id=admin_link class=jagdb_top_nav_link_parent >
+                            <a class=jagdb_top_nav_link href="{% url 'admin:index' %}" > Admin </a>
+                        </li>
+                    {% endif %}
                     <li style="float:right;">
                         <span class=jagdb_user_messages>
                             Currently logged in as {{ user }} 

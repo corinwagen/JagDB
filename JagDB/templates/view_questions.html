@@ -167,7 +167,7 @@
                             {% if perms.question_categorizer.can_edit_and_delete %}
                                 <br> 
                                 <button id="edit_{{ question.id }}" class="btn btn-sm btn-primary edit" 
-                                    onclick="window.location.href='{% url 'edit_question' question.type question.id %}'">
+                                    onclick="window.location.href='{% url 'edit_question' question.type question.id params %}'">
                                         Edit 
                                     </a>
                                 </button>

@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import permission_required
+from django.core.urlresolvers import reverse
 import datetime
 import operator
 import warnings 
@@ -159,35 +160,34 @@ def export(request):
 
 @login_required 
 @permission_required('polls.can_edit_and_delete')
-def edit_question(request, type, question_id):
+def edit_question(request, type, question_id, params):
     context = {}
     question = ''
     if type == "tossup":
         question = Tossup.objects.get(id=question_id)
-        if request.POST:
-            question.question       = request.POST.get("question_text", question.question)
-            question.answer         = request.POST.get("answer", question.answer)
-            question.packet_id      = request.POST.get("packet_id", question.packet.id)
-            question.subject_id     = request.POST.get("subject_id", question.subject_id)
-            question.updated_by_id  = request.user.id
-            question.updated_at     = datetime.datetime.now()
-            question.save()
+        question.question       = request.POST.get("question_text", question.question)
+        question.answer         = request.POST.get("answer", question.answer)
+        question.packet_id      = request.POST.get("packet_id", question.packet.id)
+        question.subject_id     = request.POST.get("subject_id", question.subject_id)
+        question.updated_by_id  = request.user.id
+        question.updated_at     = datetime.datetime.now()
+        question.save()
     elif type == "bonus":
         question = Bonus.objects.get(id=question_id)
-        if request.POST:
-            question.leadin         = request.POST.get("leadin", question.leadin)
-            question.part1          = request.POST.get("part1", question.part1)
-            question.part2          = request.POST.get("part2", question.part2)
-            question.part3          = request.POST.get("part3", question.part3)
-            question.answer1        = request.POST.get("answer1", question.answer1)
-            question.answer2        = request.POST.get("answer2", question.answer2)
-            question.answer3        = request.POST.get("answer3", question.answer3)
-            question.packet_id      = request.POST.get("packet_id", question.packet.id)
-            question.subject_id     = request.POST.get("subject_id", question.subject_id)
-            question.updated_by_id  = request.user.id
-            question.updated_at     = datetime.datetime.now()
-            question.save()
-    
+        question.leadin         = request.POST.get("leadin", question.leadin)
+        question.part1          = request.POST.get("part1", question.part1)
+        question.part2          = request.POST.get("part2", question.part2)
+        question.part3          = request.POST.get("part3", question.part3)
+        question.answer1        = request.POST.get("answer1", question.answer1)
+        question.answer2        = request.POST.get("answer2", question.answer2)
+        question.answer3        = request.POST.get("answer3", question.answer3)
+        question.packet_id      = request.POST.get("packet_id", question.packet.id)
+        question.subject_id     = request.POST.get("subject_id", question.subject_id)
+        question.updated_by_id  = request.user.id
+        question.updated_at     = datetime.datetime.now()
+        question.save()
+
+    context["view_url"] = "{}?{}".format(reverse('view_questions'), params); 
     context["question"] = question
     context["subject_list"] = Subject.objects.all()
     return render(request, 'edit_question.html', context)    

@@ -6,7 +6,7 @@
 {% endblock %} 
 
 {% block content %}
-    <a href="{% url 'view_questions' %}"> Back to Question View </a>
+    <a href="{{ view_url }}"> Back to Question View </a>
     <form action="" method="post"> {% csrf_token %}
         <input type=hidden name=id value="{{question.id}}">
         <input type=hidden name=type value="{{question.type}}">
@@ -50,7 +50,7 @@
                 url: "{% url 'delete_question'  %}",
                 success: function (data) {
                     if (data.success) {
-                        window.location.href = "{% url 'view_questions' %}";
+                        window.location.href = "{{ view_url }}";
                     }
                 }
             });
