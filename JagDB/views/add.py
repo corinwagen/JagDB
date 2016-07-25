@@ -64,10 +64,18 @@ def process_batch_import(request):
     batch_text = re.sub(r'{%', '', batch_text )
     batch_text = re.sub(r'%}', '', batch_text )
 
-    batch_text = re.sub(r'ANSWER:(?P<answer>(.|\n)*?)(?P<next_num>\d{1,2}\.)', 'ANSWER:\g<answer> SPLIT \g<next_num>', batch_text )
-    questions = re.split(r'SPLIT', batch_text)
+
+    batch_text = re.sub(r'Bonuses', "SPLIT", batch_text)
+#    halves = re.split(r'Bonuses', batch_text, 2)
+    halves = re.split(r'SPLIT', batch_text,)
+    tossup_text = halves[0]
+    bonus_text  = halves[1]
+ 
+    
+    tossup_text = re.sub(r'ANSWER:(?P<answer>(.|\n)*?)(?P<next_num>\d{1,2}\.)', 'ANSWER:\g<answer> SPLIT \g<next_num>', tossup_text )
+    tossups = re.split(r'SPLIT', tossup_text)
     number = 1
-    for question in questions : 
+    for question in tossups : 
         question    = re.sub(r'\n', ' ', question)
         question    = re.sub(r'\"', '&quot;', question)
 
@@ -82,12 +90,69 @@ def process_batch_import(request):
         else :
             text = ''.join(parts)
             alerts.append('Autoparsing question {} failed.'.format(number)) 
-        formatted_questions.append({"number": number, "question_text": text, "answer": answer});    
+        formatted_questions.append({"number": number, "question_text": text, "answer": answer, "type": "tossup"});    
         number += 1
    
-    if 20 > len(questions) :
+    if 20 > number :
         for num in range(len(questions) + 1, 21):  #### off-by-one error. lol. 
-            formatted_questions.append({"number": num, "question_text": '', "answer": '' });
+            formatted_questions.append({"number": num, "question_text": '', "answer": '', "type": "tossup" });
+    
+    bonus_text = re.sub(r'ANSWER:(?P<answer>((?!\[10\]).|\n)*?)(?P<next_num>\d{1,2}\.)', 'ANSWER:\g<answer> SPLIT \g<next_num>', bonus_text )
+    bonuses = re.split(r'SPLIT', bonus_text)
+    number = 1
+    for question in bonuses: 
+        question    = re.sub(r'\n', ' ', question)
+        question    = re.sub(r'\"', '&quot;', question)
+
+        question    = re.sub(r'^ \d{1,2}\.', '', question)
+#        parts       = re.split(r'(ANSWER:|\[10\])', question, 7)
+        question    = re.sub(r'(ANSWER:|\[10\])', 'SPLIT', question)
+        parts       = re.split(r'SPLIT', question, 7)
+      
+        leadin  = ''
+        part1   = ''
+        answer1 = ''
+        part2   = ''
+        answer2 = ''
+        part3   = ''
+        answer3 = ''
+        if len(parts) == 7 :
+            leadin  = parts[0].encode('utf-8', 'xmlcharrefreplace') 
+            part1   = parts[1].encode('utf-8', 'xmlcharrefreplace') 
+            answer1 = parts[2].encode('utf-8', 'xmlcharrefreplace')
+            part2   = parts[3].encode('utf-8', 'xmlcharrefreplace') 
+            answer2 = parts[4].encode('utf-8', 'xmlcharrefreplace')
+            part3   = parts[5].encode('utf-8', 'xmlcharrefreplace') 
+            answer3 = parts[6].encode('utf-8', 'xmlcharrefreplace')
+        else :
+            text = ''.join(parts)
+            alerts.append('Autoparsing question {} failed.'.format(number)) 
+        formatted_questions.append({
+            "number": number,
+            "leadin": leadin, 
+            "part1": part1,
+            "answer1": answer1, 
+            "part2": part2,
+            "answer2": answer2, 
+            "part3": part3,
+            "answer3": answer3, 
+            "type": "bonus",
+        });    
+        number += 1
+
+    if 20 > number :
+        for num in range(len(questions) + 1, 21):  #### off-by-one error. lol. 
+            formatted_questions.append({
+                "number": num, 
+                "leadin": '',
+                "part1": '',
+                "part2": '',
+                "part3": '',
+                "answer1": '', 
+                "answer2": '', 
+                "answer3": '', 
+                "type": "bonus" 
+            });
     
     subject_list = Subject.objects.all()
     context['subject_list'] = subject_list
@@ -109,19 +174,47 @@ def batch_import(request):
     packet_id = packet_id.encode('utf-8')
      
     for num in xrange(1,30):   
-        question    = request.POST.get('question_{}'.format(num), None)
-        if question is None or question=='':
-            break
-        question    = question.encode('utf-8', 'xmlcharrefreplace') 
-        answer      = request.POST.get('answer_{}'.format(num), None)
-        if answer is None:
-            break
-        answer      = answer.encode('utf-8', 'xmlcharrefreplace') 
-        subject     = request.POST.get('subject_{}'.format(num), '')
-       
-        question_obj = Tossup(question=question, answer=answer, subject_id=subject, packet_id=packet_id)
-        question_obj.created_by_id  = request.user.id
-        question_obj.created_at     = datetime.datetime.now()
-        question_obj.save()
-    
-    return redirect("{}?packet_id={}".format(reverse('view_questions'), packet_id)); 
+        if request.POST.get('type_{}'.format(num), '') == "tossup": 
+            question    = request.POST.get('question_{}'.format(num), None)
+            if question is None or question=='':
+                break
+#            question    = question.encode('utf-8', 'xmlcharrefreplace') 
+            answer      = request.POST.get('answer_{}'.format(num), None)
+            if answer is None:
+                break
+#            answer      = answer.encode('utf-8', 'xmlcharrefreplace') 
+            subject     = request.POST.get('subject_{}'.format(num), '')
+           
+            question_obj = Tossup(question=question, answer=answer, subject_id=subject, packet_id=packet_id)
+            question_obj.created_by_id  = request.user.id
+            question_obj.created_at     = datetime.datetime.now()
+            question_obj.save()
+        elif request.POST.get('type_{}'.format(num), '') == "bonus": 
+            leadin    = request.POST.get('leadin_{}'.format(num), None)
+#            leadin    = leadin.encode('utf-8', 'xmlcharrefreplace') 
+            part1     = request.POST.get('part1_{}'.format(num), None)
+#            part1     = part1.encode('utf-8', 'xmlcharrefreplace') 
+            answer1   = request.POST.get('answer1_{}'.format(num), None)
+            if answer1 is None:
+                break
+#            answer1     = answer1.encode('utf-8', 'xmlcharrefreplace') 
+            part2     = request.POST.get('part2_{}'.format(num), None)
+#            part2     = part2.encode('utf-8', 'xmlcharrefreplace') 
+            answer2   = request.POST.get('answer2_{}'.format(num), None)
+            if answer2 is None:
+                break
+#            answer2     = answer2.encode('utf-8', 'xmlcharrefreplace') 
+            part3     = request.POST.get('part3_{}'.format(num), None)
+#            part3     = part3.encode('utf-8', 'xmlcharrefreplace') 
+            answer3   = request.POST.get('answer3_{}'.format(num), None)
+            if answer3 is None:
+                break
+#            answer3     = answer3.encode('utf-8', 'xmlcharrefreplace') 
+            subject     = request.POST.get('subject_{}'.format(num), '')
+           
+            question_obj = Bonus(leadin=leadin, part1=part1, answer1=answer1, part2=part2, answer2=answer2, part3=part3, answer3=answer3, subject_id=subject, packet_id=packet_id)
+            question_obj.created_by_id  = request.user.id
+            question_obj.created_at     = datetime.datetime.now()
+            question_obj.save()
+
+    return redirect("{}".format(reverse('view_questions')))

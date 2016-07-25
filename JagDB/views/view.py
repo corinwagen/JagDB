@@ -102,8 +102,6 @@ def view_questions (request):
     for tournament in tournaments:
         params = params + "&tournaments=" + tournament
   
-    warnings.warn(params)
-   
     context["questions"]        = questions
     context["subjects"]         = subjects
     context["tournaments"]      = tournaments

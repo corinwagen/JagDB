@@ -51,7 +51,8 @@ class Tossup(models.Model):
         return obj
 
     def __unicode__(self):
-        text = "{} <br> ANSWER: {} ".format(self.question.encode("utf-8"), self.answer.encode("utf-8"))
+        text = "{} <br> ANSWER: {} ".format(self.question, self.answer)
+#        text = "{} <br> ANSWER: {} ".format(self.question.encode("utf-8"), self.answer.encode("utf-8"))
         text = text.replace("<req>", "<strong> <u>")
         text = text.replace("</req>", "</u> </strong>")
         return text
@@ -115,10 +116,14 @@ class Bonus(models.Model):
         return obj
 
     def __unicode__(self):
-        text = "{} <br>".format(self.leadin.encode("utf-8"))
-        text += "[10] {} <br> ANSWER: {} <br>".format(self.part1.encode('utf-8'), self.answer1.encode('utf-8'))
-        text += "[10] {} <br> ANSWER: {} <br>".format(self.part2.encode('utf-8'), self.answer2.encode('utf-8'))
-        text += "[10] {} <br> ANSWER: {} ".format(self.part3.encode('utf-8'), self.answer3.encode('utf-8'))
+#        text = "{} <br>".format(self.leadin.encode("utf-8"))
+#        text += "[10] {} <br> ANSWER: {} <br>".format(self.part1.encode('utf-8'), self.answer1.encode('utf-8'))
+#        text += "[10] {} <br> ANSWER: {} <br>".format(self.part2.encode('utf-8'), self.answer2.encode('utf-8'))
+#        text += "[10] {} <br> ANSWER: {} ".format(self.part3.encode('utf-8'), self.answer3.encode('utf-8'))
+        text = "{} <br>".format(self.leadin)
+        text += "[10] {} <br> ANSWER: {} <br>".format(self.part1, self.answer1)
+        text += "[10] {} <br> ANSWER: {} <br>".format(self.part2, self.answer2)
+        text += "[10] {} <br> ANSWER: {} ".format(self.part3, self.answer3)
         text = text.replace("<req>", "<strong> <u>")
         text = text.replace("</req>", "</u> </strong>")
         return text

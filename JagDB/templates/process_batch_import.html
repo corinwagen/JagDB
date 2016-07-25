@@ -15,7 +15,7 @@
     {% endif %}
     
     <div id=question_container>
-        <form action="{% url 'batch_import' %}" method=POST> {% csrf_token %}
+        <form action="{% url 'batch_import' %}" method=POST class=form-inline> {% csrf_token %}
             <input type=hidden name=packet_id value="{{ packet.id }}" /> 
             <table class=table>
                 <th colspan=2>
@@ -40,13 +40,43 @@
                             {{ question.number }}.
                         </td>
                         <td colspan=5>
-                            {% autoescape off %}
-                                <textarea name="question_{{ question.number }}" class=form-control rows=8 cols=80>{{ question.question_text }}</textarea>   
-                                <br> 
-                                <span title="Enclose the required part of the answer in <req> </req> for proper formatting and parsing.">
-                                    ANSWER: <input class="form-control" type="text" name="answer_{{ question.number }}" value="{{ question.answer }}" />
-                                </span>
-                            {% endautoescape %}
+                            {% if question.type == "tossup" %}
+                                {% autoescape off %}
+                                    <input type=hidden name="type_{{question.number }}" value="tossup" />
+                                    <textarea name="question_{{ question.number }}" class=form-control rows=8 cols=120>{{ question.question_text }}</textarea> 
+                                    <br> 
+                                    <span title="Enclose the required part of the answer in <req> </req> for proper formatting and parsing.">
+                                        ANSWER: 
+                                    <input class=form-control type="text" name="answer_{{ question.number }}" value="{{ question.answer }}" style="width:90%" />
+                                    </span>
+                                {% endautoescape %}
+                            {% elif question.type == "bonus" %} 
+                                {% autoescape off %}
+                                    <input type=hidden name="type_{{question.number }}" value="bonus" />
+                                    <textarea name="leadin_{{ question.number }}" class=form-control rows=2 cols=120>{{ question.leadin }}</textarea>   
+                                    <br> 
+                                    [10] <textarea name="part1_{{ question.number }}" class=form-control rows=2 cols=117>{{ question.part1 }}</textarea>   
+                                    <br> 
+                                    <span title="Enclose the required part of the answer in <req> </req> for proper formatting and parsing.">
+                                        ANSWER: <input class="form-control" 
+                                           style="width:90%" type="text" name="answer1_{{ question.number }}" value="{{ question.answer1 }}" />
+                                    </span>
+                                    <br> 
+                                    [10] <textarea name="part2_{{ question.number }}" class=form-control rows=2 cols=117>{{ question.part2 }}</textarea>   
+                                    <br> 
+                                    <span title="Enclose the required part of the answer in <req> </req> for proper formatting and parsing.">
+                                        ANSWER: <input class="form-control" 
+                                            style="width:90%" type="text" name="answer2_{{ question.number }}" value="{{ question.answer2 }}" />
+                                    </span>
+                                    <br> 
+                                    [10] <textarea name="part3_{{ question.number }}" class=form-control rows=2 cols=117>{{ question.part3 }}</textarea>   
+                                    <br> 
+                                    <span title="Enclose the required part of the answer in <req> </req> for proper formatting and parsing.">
+                                        ANSWER: <input class="form-control" 
+                                            style="width:90%" type="text" name="answer3_{{ question.number }}" value="{{ question.answer3 }}" />
+                                    </span>
+                                {% endautoescape %}
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
