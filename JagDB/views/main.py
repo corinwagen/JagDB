@@ -3,7 +3,7 @@ from django.shortcuts import render
 from question_categorizer.models import Tossup, Bonus, AuthUser, Subject, Tournament
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Count, Min, Sum, Avg, Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
@@ -210,3 +210,13 @@ def delete_question(request):
         return JsonResponse({'success': 0})
 
 
+@login_required 
+def get_subject_data(request):
+    subjects = Subject.objects.annotate(Count('tossup_subject', distinct=True)).annotate(Count('bonus_subject', distinct=True)) 
+    d3_data = []
+    for row in subjects:
+        label = row.subject
+        value = int(row.tossup_subject__count) + int(row.bonus_subject__count)
+        print value
+        d3_data.append({'label': label, 'value': value })
+    return JsonResponse({ 'success': 1, 'd3_data': d3_data });
