@@ -32,10 +32,8 @@ urlpatterns = [
     url(r'^flag_question/$', views.flag_question, name="flag_question"),
     url(r'^unflag_question/$', views.unflag_question, name="unflag_question"),
     url(r'^export/$', views.export, name="export"),
-    url(r'^edit_question/(?P<type>[a-z]+)/(?P<question_id>\d+)/(?P<params>.*)', views.edit_question, name="edit_question"),
+    url(r'^edit_question/(?P<type>[a-z]+)/(?P<question_id>\d+)/', views.edit_question, name="edit_question"),
     url(r'^delete_question/$', views.delete_question, name="delete_question"),
     url(r'^process_batch_import', views.process_batch_import, name="process_batch_import"),
-    url(r'^batch_import', views.batch_import, name="batch_import"),
-    url(r'^get_subject_data/$', views.get_subject_data, name="get_subject_data"),
     url(r'', views.home),
     ]

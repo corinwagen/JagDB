@@ -81,8 +81,8 @@ WSGI_APPLICATION = 'JagDB.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'jagdb',
-        'USER': 'root',
+        'NAME': 'cwagen+jagdb',
+        'USER': 'cwagen',
         'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '',
