@@ -1,4 +1,9 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse 
+try:
+    from django.http import JsonResponse
+except ImportError: 
+    1
+#    from django.utils.http import JsonResponse
 from django.shortcuts import render, redirect
 from question_categorizer.models import Tossup, Bonus, AuthUser, Subject, Tournament, Packet
 from django.contrib import auth
