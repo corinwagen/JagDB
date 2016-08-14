@@ -94,7 +94,7 @@ def process_batch_import(request):
         number += 1
    
     if 20 > number :
-        for num in range(len(questions) + 1, 21):  #### off-by-one error. lol. 
+        for num in range(len(tossups) + 1, 21):  #### off-by-one error. lol. 
             formatted_questions.append({"number": num, "question_text": '', "answer": '', "type": "tossup" });
     
     bonus_text = re.sub(r'ANSWER:(?P<answer>((?!\[10\]).|\n)*?)(?P<next_num>\d{1,2}\.)', 'ANSWER:\g<answer> SPLIT \g<next_num>', bonus_text )
@@ -141,7 +141,7 @@ def process_batch_import(request):
         number += 1
 
     if 20 > number :
-        for num in range(len(questions) + 1, 21):  #### off-by-one error. lol. 
+        for num in range(len(bonuses) + 1, 21):  #### off-by-one error. lol. 
             formatted_questions.append({
                 "number": num, 
                 "leadin": '',

@@ -1,5 +1,46 @@
 {% extends 'main.html' %}
+{% load staticfiles %}
 {% block title %} Home {% endblock %} 
 
 {% block content %}
+    <p id=chart_msg> </p>
+    <div id=chart>
+        <svg style="height:600px; width:1000px;">
+        </svg>
+    </div>
+
+    <!-- Don't want to load these on every page... -->
+    <script src="{% static 'js/d3.v3.min.js' %}"></script>
+    <script src="{% static 'js/nv.d3.min.js' %}"></script>
+    <link href="{% static 'css/nv.d3.min.css' %}" rel="stylesheet">
+
+    <script>
+        $("#chart_msg").text("Loading...");
+        $.ajax({
+            url: "{% url 'get_subject_data' %}",
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) {
+                    $("#chart_msg").text("");
+                    nv.addGraph( function () {
+                        var chart = nv.models.pieChart()
+                            .x(function(d) { return d.label })
+                            .y(function(d) { return d.value })
+                            .showLabels(true)
+                            .labelThreshold(500)
+                            .labelType("value");
+
+                        d3.select("#chart svg")
+                            .datum(data.d3_data)
+                            .transition().duration(350)
+                            .call(chart);
+
+                        return chart;
+                    });
+                } else {
+                    $("#chart_msg").text("Graph failed: " + data.message);
+                }
+            },
+        });
+    </script>
 {% endblock %}
