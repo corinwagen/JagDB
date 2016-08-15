@@ -1,9 +1,9 @@
-from django.http import HttpResponse 
-try:
-    from django.http import JsonResponse
-except ImportError: 
-    1
-#    from django.utils.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
+#try:
+#    from django.http import JsonResponse
+#except ImportError: 
+#    1
+from django.shortcuts import render
 from question_categorizer.models import Tossup, Bonus, AuthUser, Subject, Tournament
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
@@ -20,12 +20,6 @@ import pickle
 @login_required
 def home(request):
     context = {}
-    subjects = Subject.objects.annotate(Count('tossup_subject', distinct=True)).annotate(Count('bonus_subject', distinct=True)) 
-    d3_data = []
-    for row in subjects:
-        label = row.subject
-        value = int(row.tossup_subject__count) + int(row.bonus_subject__count)
-        d3_data.append({'label': label, 'value': value })
     return render(request, 'home.html', context)
 
 @login_required
