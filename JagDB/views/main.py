@@ -31,9 +31,16 @@ def user_view(request, user_id):
         user.first_name = request.POST.get("first_name", user.first_name)
         user.last_name  = request.POST.get("last_name", user.last_name)
         user.email      = request.POST.get("email", user.email)
+
+        password        = request.POST.get("password", '')
+        user.email = "testing"
+        if password: 
+            user.set_password(password)
+        
         user.save()
 
-    request.user.refresh_from_db()
+#    request.user.refresh_from_db()
+    request.user.save(); # fuck django 1.7
 
     t_added = Tossup.objects.filter(created_by__id = user_id).count()
     b_added = Bonus.objects.filter(created_by__id = user_id).count()
